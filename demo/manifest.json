@@ -1,0 +1,101 @@
+{
+ "version": 1,
+ "title": "Arcmo 데모 리포트",
+ "note": "실제 분석 결과로 만든 공개 데모입니다. 선수 정보는 가명 처리했습니다.",
+ "generated_at": "2026-09-10T23:30:29",
+ "anonymized": true,
+ "user": {
+  "id": "demo",
+  "name": "데모",
+  "teams": []
+ },
+ "teams": [
+  {
+   "name": "Arcmo 데모팀",
+   "color": "#073b2d"
+  }
+ ],
+ "players": [
+  {
+   "id": "d1",
+   "number": 7,
+   "name": "김선우",
+   "team": "Arcmo 데모팀",
+   "position": "3B",
+   "lr": "R/R"
+  }
+ ],
+ "analysis_options": [
+  {
+   "key": "손 이동경로",
+   "label": "손 이동경로",
+   "overlay": "hand_trace",
+   "needs_lr": true
+  },
+  {
+   "key": "머리 고정",
+   "label": "머리 고정",
+   "overlay": "head_stability",
+   "needs_lr": false
+  },
+  {
+   "key": "어깨-골반 회전",
+   "label": "어깨-골반 회전",
+   "overlay": "shoulder_hip_rotation",
+   "needs_lr": false
+  },
+  {
+   "key": "무게중심",
+   "label": "무게중심",
+   "overlay": "center_shift",
+   "needs_lr": false
+  }
+ ],
+ "overlay_keys": [
+  "skeleton",
+  "hand_trace",
+  "head_stability",
+  "center_shift",
+  "shoulder_hip_rotation"
+ ],
+ "reports": [
+  {
+   "player_id": "d1",
+   "report_id": "demo",
+   "seq": 1,
+   "date": "2026.09.10",
+   "created_at": "2026-09-10T17:40:11",
+   "analysis_type": "batting",
+   "items": [
+    "손 이동경로",
+    "머리 고정",
+    "어깨-골반 회전",
+    "무게중심"
+   ],
+   "memo": "공개 데모 · 손 이동경로 · 머리 고정 · 어깨-골반 회전 · 무게중심",
+   "is_complete": true,
+   "has_summary": true,
+   "has_series": true,
+   "has_video": true,
+   "overlays": {
+    "skeleton": true,
+    "hand_trace": true,
+    "head_stability": true,
+    "center_shift": true,
+    "shoulder_hip_rotation": true
+   },
+   "head_stability": 9.4,
+   "impact_weight_front": null,
+   "impact_weight_rear": null,
+   "separation_deg": 72.4,
+   "bat_side": "R"
+  }
+ ],
+ "assets": {
+  "d1/demo": {
+   "series": true,
+   "pose": true,
+   "video": true
+  }
+ }
+}

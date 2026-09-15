@@ -2,7 +2,7 @@
  "version": 1,
  "title": "Arcmo 데모 리포트",
  "note": "실제 분석 결과로 만든 공개 데모입니다. 선수 정보는 가명 처리했습니다.",
- "generated_at": "2026-09-10T23:30:29",
+ "generated_at": "2026-09-15T05:10:04",
  "anonymized": true,
  "user": {
   "id": "demo",
@@ -21,7 +21,7 @@
    "number": 7,
    "name": "김선우",
    "team": "Arcmo 데모팀",
-   "position": "3B",
+   "position": "CF",
    "lr": "R/R"
   }
  ],
@@ -87,7 +87,7 @@
    "head_stability": 9.4,
    "impact_weight_front": null,
    "impact_weight_rear": null,
-   "separation_deg": 72.4,
+   "separation_deg": 47.7,
    "bat_side": "R"
   }
  ],

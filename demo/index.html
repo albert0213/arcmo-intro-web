@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Arcmo 리포트 · 2026.09.10</title>
+<title>Arcmo 데모 리포트</title>
 <style>
 :root{
   --bg:#eef0f4; --surface:#ffffff; --surface2:#f7f8fa; --surface3:#eceef2;
@@ -157,7 +157,7 @@ details.adv[open] summary::before{transform:rotate(90deg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .view{display:none;flex:1;min-height:0;flex-direction:column;overflow:auto;-webkit-overflow-scrolling:touch}
 .view.on{display:flex}
-#v-capture{overflow:hidden}
+#v-capture,#v-collect{overflow:hidden}
 .pad{padding:16px}
 .maxw{width:100%;max-width:1180px;margin:0 auto}
 
@@ -248,7 +248,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 
 /* ── 촬영 ───────────────────────────── */
 .stage{background:#000;position:relative;flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
-.stage img{width:100%;height:100%;object-fit:contain;display:block}
+/* 절대배치로 stage 크기에 딱 맞춘다. 그리드 안에서 height:100% 는 기준 높이가 없어
+   이미지 원래 비율 높이로 커지고, 넘친 아래쪽이 overflow:hidden 에 잘렸다(아이패드 가로). */
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .stage .ph{position:absolute;inset:0;display:grid;place-items:center;color:#8b93a1;text-align:center;padding:24px;font-size:14px}
 .recbadge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:7px;background:rgba(192,57,43,.94);color:#fff;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700}
 .recbadge.on{display:flex}
@@ -261,6 +263,46 @@ main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .reccircle.rec i{border-radius:7px;width:26px;height:26px}
 .reccircle:disabled{opacity:.4}
 .timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:17px}
+
+/* ── 데이터 수집 (녹화만) ───────────── */
+.cstat{position:absolute;top:12px;right:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:70%}
+.cstat span{background:rgba(0,0,0,.58);color:#fff;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.cstat span.bad{background:rgba(192,57,43,.92)}
+.ctools{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px 8px;background:var(--surface);border-top:1px solid var(--line)}
+.ctools .teampick{width:auto;flex:none;max-width:48%;padding:5px 10px;min-height:44px}
+.ctools .teampick b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ctools .avatar{width:30px;height:30px;font-size:12px}
+.ctools .inp{min-height:44px;flex:1;min-width:0}
+.cstrip{flex:none;display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px;background:var(--surface);scrollbar-width:none}
+.cstrip:empty{display:none}
+.cchip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 4px 4px 11px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface2);font-size:12.5px;font-weight:650;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cchip.saving{color:var(--accent);border-color:var(--accent)}
+.cchip.failed{color:var(--danger);border-color:var(--danger)}
+.cchip .x{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:var(--ink3)}
+.cchip .x:hover{background:var(--surface3)}
+.ccount{font-size:13px;color:var(--ink2)}
+.ccount b{font-size:22px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* 수집 영상 목록 */
+.clipbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+.clipbar select.inp{width:auto;min-height:38px;padding:6px 12px}
+.crow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border-bottom:1px solid var(--line2);cursor:pointer}
+.crow:last-child{border-bottom:0}
+.crow:hover{background:var(--surface2)}
+.crow.on{background:var(--accent-soft)}
+.crow .cb{width:19px;height:19px;accent-color:var(--accent);flex:none;pointer-events:none}
+.crow .t{flex:none;min-width:70px}
+.crow .t b{display:block;font-variant-numeric:tabular-nums;font-weight:700}
+.crow .t span{display:block;font-size:11.5px;color:var(--ink3)}
+.crow .who{flex:1;min-width:0}
+.crow .who .nm{display:block;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow .who .meta{display:block;font-size:12px;color:var(--ink3)}
+.crow .tags{flex:none;justify-content:flex-end;max-width:48%}
+@media (max-width:620px){
+  .crow{flex-wrap:wrap;row-gap:8px}
+  .crow .tags{order:3;max-width:none;width:100%;justify-content:flex-start;padding-left:31px}
+}
 
 /* ── 옵션 체크 ──────────────────────── */
 .optlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
@@ -466,6 +508,10 @@ main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
         <svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6"/><path d="M18 20a5 5 0 0 0-2-4"/></svg>팀 / 선수 관리</button>
       <button class="navitem" data-go="analysis">
         <svg class="i" viewBox="0 0 24 24"><path d="M4 20L14 6"/><circle cx="17" cy="4" r="2"/><path d="M6 18l-2 2"/></svg>타격 분석</button>
+      <button class="navitem" data-go="collect">
+        <svg class="i" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>데이터 수집 촬영</button>
+      <button class="navitem" data-go="clips">
+        <svg class="i" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>수집 영상 · 분석</button>
       <button class="navitem" disabled>
         <svg class="i" viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-6M22 18v-9"/></svg>데이터 비교<small>준비 중</small></button>
       <button class="navitem" disabled>
@@ -559,6 +605,40 @@ main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
       </div>
     </section>
 
+    <!-- ── 데이터 수집: 녹화만 ── -->
+    <section class="view" id="v-collect">
+      <div class="stage">
+        <img id="cPreview" alt="">
+        <div class="ph" id="cPreviewPh">카메라 연결을 확인하는 중…</div>
+        <div class="recbadge" id="cRecBadge"><i></i> 녹화 중</div>
+        <div class="cstat" id="cStat"></div>
+      </div>
+      <div class="ctools">
+        <button class="teampick" id="cWhoBtn">
+          <span class="avatar" id="cWhoAv">?</span>
+          <b id="cWhoNm">선수 미지정</b>
+          <svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px;color:var(--ink3);flex:none"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <input class="inp" id="cTag" type="text" maxlength="60" autocomplete="off" placeholder="태그 (예: 직구, 티배팅)">
+        <button class="btn sm" id="cGoList">목록</button>
+      </div>
+      <div class="cstrip" id="cStrip"></div>
+      <div class="capbar">
+        <div class="col" style="gap:2px">
+          <span class="timer" id="cTimer">0:00</span>
+          <span class="dim" style="font-size:12px" id="cWho"></span>
+        </div>
+        <button class="reccircle" id="cBtnRec" aria-label="녹화"><i></i></button>
+        <div class="col" style="gap:2px;align-items:flex-end">
+          <span class="ccount">오늘 <b id="cCount">0</b>개</span>
+          <span class="dim" style="font-size:12px;text-align:right" id="cHint">녹화 버튼 또는 스페이스바</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 수집 영상 목록 · 나중에 분석 ── -->
+    <section class="view" id="v-clips"><div id="clipsRoot"></div></section>
+
     <!-- ── 진행 ── -->
     <section class="view" id="v-progress">
       <div class="pad maxw" style="width:100%">
@@ -647,7 +727,11 @@ function openSheet(html){
   $('#sheetPanel').innerHTML = html;
   $('#sheet').classList.add('on');
 }
-function closeSheet(){ $('#sheet').classList.remove('on'); }
+function closeSheet(){
+  $('#sheet').classList.remove('on');
+  // 시트 안 영상(수집 클립 재생)은 닫을 때 내려받기까지 멈춘다
+  $$('#sheetPanel video').forEach(v => { try{ v.pause(); v.removeAttribute('src'); v.load(); }catch(e){} });
+}
 $('#sheet').addEventListener('click', e => { if (e.target.dataset.close !== undefined) closeSheet(); });
 
 function teamColor(name){
@@ -737,7 +821,8 @@ async function pingLoop(){
 
 /* ═══════════ 네비게이션 ═══════════ */
 const TITLES = { home:'홈', manage:'팀 / 선수 관리', analysis:'타격 분석', capture:'촬영',
-                 progress:'분석 진행', report:'리포트', detail:'상세', settings:'설정' };
+                 progress:'분석 진행', report:'리포트', detail:'상세', settings:'설정',
+                 collect:'데이터 수집', clips:'수집 영상' };
 
 function setDrawer(on){
   $('#drawer').classList.toggle('on', on);
@@ -748,6 +833,7 @@ $('#scrim').onclick   = ()=> setDrawer(false);
 
 function go(view, silent){
   if (S.view === 'capture' && view !== 'capture') stopPreview();
+  if (S.view === 'collect' && view !== 'collect') stopCollectPreview();
   if (view !== S.view) stopAllPlayers();
   S.view = view;
   $$('.view').forEach(v=>v.classList.toggle('on', v.id === 'v-'+view));
@@ -760,6 +846,10 @@ function go(view, silent){
 }
 $$('.navitem[data-go]').forEach(b => b.onclick = ()=>{
   const v = b.dataset.go;
+  if (S.col && S.col.recording && v !== 'collect'){ setDrawer(false); toast('녹화를 먼저 중지하세요'); return; }
+  S.repBack = null;
+  if (v==='collect'){ enterCollect(); return; }
+  if (v==='clips'){ enterClips(); return; }
   if (v==='home') renderHome();
   if (v==='manage') renderManage();
   if (v==='analysis') renderAna();
@@ -777,6 +867,7 @@ function updateBack(){
 }
 $('#btnBack').onclick = ()=>{
   if (S.view==='detail'){ go('report'); return; }
+  if (S.view==='report' && S.repBack==='clips'){ S.repBack = null; enterClips(); return; }
   if (S.view==='report'){ renderHome(); go('home'); return; }
   if (S.view==='progress'){ go('capture'); startPreview(); return; }
   if (S.view==='capture'){ if(!confirmLeaveCapture()) return; go('analysis'); return; }
@@ -929,6 +1020,8 @@ function featureGridHTML(){
         '팀 / 선수 관리','팀과 선수를 추가·수정합니다.','manage')
     + c('<svg class="i lg" viewBox="0 0 24 24"><path d="M4 20L14 6"/><circle cx="17" cy="4" r="2"/><path d="M6 18l-2 2"/></svg>',
         '타격 분석','촬영하고 바로 분석합니다.','analysis')
+    + c('<svg class="i lg" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>',
+        '데이터 수집','분석 없이 녹화만 빠르게 모으고, 나중에 분석합니다.','collect')
     + c('<svg class="i lg" viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-6M22 18v-9"/></svg>',
         '데이터 비교','두 리포트를 나란히 봅니다.','',1)
     + c('<svg class="i lg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/></svg>',
@@ -940,6 +1033,7 @@ function wireFeatureGrid(host){
     const f = b.dataset.f;
     if (f==='manage'){ renderManage(); go('manage'); }
     if (f==='analysis'){ renderAna(); go('analysis'); }
+    if (f==='collect') enterCollect();
   });
 }
 
@@ -1340,6 +1434,443 @@ $('#progOpen').onclick = ()=> openReport(S.job.pid, S.job.rid);
 </script>
 
 <script>
+/* ═══════════ 데이터 수집 — 녹화만, 분석은 나중에 ═══════════
+   녹화 경로는 '촬영' 화면과 같다(서버 capture_service). 다른 점은
+   중지가 곧바로 돌아온다는 것 — mp4 변환은 서버 대기열이 하고, 그동안 바로 다음 녹화. */
+S.col = {
+  recording:false, busy:false, seq:0, t0:0, timer:null, tick:null, limitWarned:false,
+  player: LS.get('collect.player', null), tag: LS.get('collect.tag', ''),
+  clips:[], days:[], day:null, sel:new Set(), saving:0, analyzing:null,
+};
+
+function todayYmd(){ const d = new Date(); return d.getFullYear() + pad2(d.getMonth()+1) + pad2(d.getDate()); }
+function dayText(ymd){ return ymd ? ymd.slice(0,4)+'.'+ymd.slice(4,6)+'.'+ymd.slice(6,8) : ''; }
+function clipTime(cid){ const t = String(cid).slice(9,15); return t.slice(0,2)+':'+t.slice(2,4)+':'+t.slice(4,6); }
+function playerLabel(pid){
+  if (!pid) return '선수 미지정';
+  const p = playerById(pid);
+  return p ? (p.number + ' ' + p.name) : ('ID ' + pid);
+}
+function secText(v){ return v==null ? '' : Number(v).toFixed(1) + '초'; }
+
+/* ── 촬영 화면 ── */
+function enterCollect(){
+  if (S.col.player && !playerById(S.col.player)) S.col.player = null;
+  $('#cTag').value = S.col.tag || '';
+  renderCollectWho();
+  if (!S.col.recording) $('#cTimer').textContent = '0:00';
+  go('collect');
+  startCollectPreview();
+  syncCollectStatus().catch(()=>{});
+  refreshCollectClips().catch(()=>{});
+  startCollectTick();
+}
+
+function renderCollectWho(){
+  const p = playerById(S.col.player);
+  $('#cWhoNm').textContent = p ? p.name : '선수 미지정';
+  const av = $('#cWhoAv');
+  av.textContent = p ? String(p.number) : '?';
+  av.style.background = p ? teamColor(p.team) : 'var(--ink3)';
+  $('#cWho').textContent = (p ? p.name : '선수 미지정') + (S.col.tag ? ' · ' + S.col.tag : '');
+}
+
+function startCollectPreview(){
+  const img = $('#cPreview'), ph = $('#cPreviewPh');
+  ph.textContent = '카메라 화면을 불러오는 중…';
+  ph.style.display = 'grid';
+  img.onload  = ()=>{ ph.style.display = 'none'; };
+  img.onerror = ()=>{ ph.style.display = 'grid'; ph.textContent = '카메라 화면을 받지 못했습니다. 분석PC의 카메라 연결을 확인하세요.'; };
+  img.src = url('/video_feed?ts=' + Date.now());
+}
+function stopCollectPreview(){
+  const img = $('#cPreview');
+  img.removeAttribute('src'); img.onload = img.onerror = null;
+}
+
+function setCollectRecording(on, t0){
+  S.col.recording = on;
+  $('#cBtnRec').classList.toggle('rec', on);
+  $('#cRecBadge').classList.toggle('on', on);
+  clearInterval(S.col.timer); S.col.timer = null;
+  if (on){
+    S.col.t0 = t0 || Date.now(); S.col.limitWarned = false;
+    $('#cTimer').textContent = fmtDur(Date.now() - S.col.t0);
+    S.col.timer = setInterval(()=>{ $('#cTimer').textContent = fmtDur(Date.now() - S.col.t0); }, 200);
+  }
+  updateCollectHint();
+}
+
+function updateCollectHint(){
+  $('#cHint').textContent = S.col.recording ? '스윙 후 정지 (스페이스바)'
+    : S.col.saving ? ('저장 중 ' + S.col.saving + '개 · 바로 다음 녹화 가능')
+    : '녹화 버튼 또는 스페이스바';
+}
+
+async function toggleCollectRec(){
+  if (S.col.busy) return;
+  const btn = $('#cBtnRec');
+  S.col.busy = true; btn.disabled = true; S.col.seq++;
+  try{
+    if (!S.col.recording){
+      await api('/api/collect/start', {method:'POST', timeout:10000,
+        body:{player_id: S.col.player, tag: S.col.tag}});
+      setCollectRecording(true);
+    } else {
+      // 응답 전에 먼저 멈춘다 (촬영 화면과 같은 이유)
+      setCollectRecording(false);
+      const r = await api('/api/collect/stop', {method:'POST', body:{}, timeout:15000});
+      S.col.saving = r.saving || (S.col.saving + 1);
+      if (r.clip){
+        S.col.clips = [r.clip].concat(S.col.clips.filter(c => c.clip_id !== r.clip.clip_id));
+        $('#cTimer').textContent = fmtDur((r.clip.requested_duration_sec || 0) * 1000);
+      }
+      renderCollectStrip();
+      updateCollectHint();
+    }
+  }catch(e){
+    toast('녹화 제어 실패: ' + e.message, 3200);
+  }finally{
+    S.col.busy = false; btn.disabled = false; S.col.seq++;
+  }
+}
+$('#cBtnRec').onclick = e => { e.currentTarget.blur(); toggleCollectRec(); };
+
+// 스페이스바 · Enter · 프레젠터 리모컨(PageUp/PageDown) 으로도 녹화/중지
+document.addEventListener('keydown', e => {
+  if (S.view !== 'collect' || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if ($('#sheet').classList.contains('on')) return;
+  const tg = e.target;
+  if (tg && /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName)){
+    if (e.key === 'Enter' || e.key === 'Escape') tg.blur();
+    return;
+  }
+  if ([' ', 'Enter', 'PageDown', 'PageUp'].includes(e.key)){
+    e.preventDefault();
+    toggleCollectRec();
+  }
+});
+
+$('#cTag').oninput = e => { S.col.tag = e.target.value.trim(); LS.set('collect.tag', S.col.tag); renderCollectWho(); };
+$('#cWhoBtn').onclick = ()=> pickCollectPlayer();
+$('#cGoList').onclick = ()=>{
+  if (S.col.recording){ toast('녹화를 먼저 중지하세요'); return; }
+  enterClips();
+};
+
+function pickCollectPlayer(){
+  openSheet('<h3>누구를 찍나요?</h3>'
+    + '<div class="searchrow" style="margin-top:0"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+    + '<input class="inp" id="cpQ" type="search" placeholder="이름·배번·팀 검색" autocomplete="off"></div>'
+    + '<div id="cpList" style="max-height:52dvh;overflow:auto;margin:10px -20px 0"></div>'
+    + '<div class="acts"><button class="btn" data-close>닫기</button></div>');
+  const draw = ()=>{
+    const q = $('#cpQ').value.trim().toLowerCase();
+    let list = S.players.slice().sort((a,b)=> String(a.team).localeCompare(String(b.team),'ko') || (a.number-b.number));
+    if (q) list = list.filter(p => String(p.name).toLowerCase().includes(q) || String(p.number).includes(q)
+                                || String(p.team).toLowerCase().includes(q));
+    $('#cpList').innerHTML =
+      '<button class="lrow'+(!S.col.player?' on':'')+'" data-p=""><span class="num">-</span>'
+      + '<span class="grow"><span class="nm">선수 미지정</span><span class="meta">나중에 목록에서 지정할 수 있습니다</span></span></button>'
+      + list.map(p => '<button class="lrow'+(p.id===S.col.player?' on':'')+'" data-p="'+esc(p.id)+'">'
+        + '<span class="num">'+esc(p.number)+'</span>'
+        + '<span class="grow"><span class="nm">'+esc(p.name)+'</span><span class="meta">'+esc(p.team)+' · '+esc(lrText(p.lr))+'</span></span>'
+        + '</button>').join('');
+    $$('#cpList .lrow').forEach(b => b.onclick = ()=>{
+      S.col.player = b.dataset.p || null;
+      LS.set('collect.player', S.col.player);
+      closeSheet(); renderCollectWho();
+    });
+  };
+  $('#cpQ').oninput = draw;
+  draw();
+}
+
+function renderCollectStrip(){
+  const today = todayYmd();
+  const list = S.col.clips.filter(c => c.day === today);
+  $('#cCount').textContent = list.filter(c => c.status !== 'failed').length;
+  $('#cStrip').innerHTML = list.slice(0, 15).map((c, i) => {
+    const n = list.length - i;
+    const cls = c.status==='saving' ? ' saving' : c.status==='failed' ? ' failed' : '';
+    const dur = secText(c.duration_sec != null ? c.duration_sec : c.requested_duration_sec);
+    const mark = c.status==='saving' ? '<span class="spin" style="width:11px;height:11px"></span>'
+               : c.status==='failed' ? '실패'
+               : (c.impact_audio_frame != null ? '⚡' : '');
+    const tip = c.error || (playerLabel(c.player_id) + (c.tag ? ' · ' + c.tag : ''));
+    return '<span class="cchip'+cls+'" title="'+esc(tip)+'">#'+n+' '+esc(dur)+' '+mark
+      + '<button class="x" data-del="'+esc(c.clip_id)+'" aria-label="삭제">'
+      + '<svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span>';
+  }).join('');
+  $$('#cStrip [data-del]').forEach(b => b.onclick = e => { e.currentTarget.blur(); deleteClips([b.dataset.del]); });
+}
+
+async function syncCollectStatus(){
+  const seq = S.col.seq;
+  const r = await api('/api/collect/status', {timeout:8000});
+  S.col.saving = r.saving || 0;
+  S.col.analyzing = r.analyzing && r.analyzing.current;
+
+  const cap = r.capture || {}, tags = [];
+  if (cap.error) tags.push('<span class="bad">카메라 오류</span>');
+  else if (cap.running){
+    tags.push('<span>' + esc(cap.requested_fps || '-') + 'fps</span>');
+    tags.push(cap.audio_active ? '<span>소리 ON</span>' : '<span class="bad">소리 없음 · 임팩트 못 잡음</span>');
+  }
+  if (S.col.saving) tags.push('<span>저장 대기 ' + S.col.saving + '</span>');
+  $('#cStat').innerHTML = tags.join('');
+
+  // 새로고침·다른 기기 등으로 어긋난 녹화 상태를 서버 기준으로 맞춘다.
+  // 요청 사이에 버튼을 눌렀다면(seq 변화) 이 응답은 이미 낡았으므로 무시.
+  if (seq === S.col.seq && !S.col.busy){
+    const rec = r.recording;
+    if (rec && !S.col.recording) setCollectRecording(true, Date.now() - rec.elapsed_sec * 1000);
+    else if (!rec && S.col.recording) setCollectRecording(false);
+    if (rec && rec.limit_reached && !S.col.limitWarned){
+      S.col.limitWarned = true;
+      toast('최대 녹화 시간에 도달했습니다. 중지를 누르면 저장됩니다', 4000);
+    }
+  }
+  updateCollectHint();
+}
+
+async function refreshCollectClips(){
+  const r = await api('/api/collect/clips', {timeout:12000});
+  S.col.days = r.days || [];
+  S.col.clips = r.clips || [];
+  S.col.saving = r.saving || 0;
+  S.col.analyzing = r.analyzing || null;
+  const ids = new Set(S.col.clips.map(c => c.clip_id));
+  Array.from(S.col.sel).forEach(id => { if (!ids.has(id)) S.col.sel.delete(id); });
+  if (S.view === 'collect'){ renderCollectStrip(); updateCollectHint(); }
+  if (S.view === 'clips') renderClips();
+}
+
+function collectBusy(){
+  return S.col.saving > 0 || !!S.col.analyzing
+    || S.col.clips.some(c => c.status === 'saving'
+         || (c.analyses||[]).some(a => a.status === 'queued' || a.status === 'running'));
+}
+
+function startCollectTick(){
+  if (S.col.tick) return;
+  const loop = async ()=>{
+    if (!['collect','clips'].includes(S.view)){ S.col.tick = null; return; }
+    try{
+      if (S.view === 'collect') await syncCollectStatus();
+      if (collectBusy()) await refreshCollectClips();
+    }catch(e){}
+    S.col.tick = setTimeout(loop, S.view === 'collect' ? 1500 : 2500);
+  };
+  S.col.tick = setTimeout(loop, 1500);
+}
+
+/* ── 수집 영상 목록 ── */
+function enterClips(){
+  go('clips');
+  renderClips();
+  refreshCollectClips().catch(e => {
+    $('#clipsRoot').innerHTML = '<div class="empty">목록을 불러오지 못했습니다.<br>' + esc(e.message) + '</div>';
+  });
+  startCollectTick();
+}
+
+function analysisPill(a){
+  const rep = a.report_id ? ' data-rep="'+esc(a.player_id)+'|'+esc(a.report_id)+'"' : '';
+  if (a.status === 'done') return '<button class="pill ok"'+rep+'>리포트 '+esc(a.report_id)+' ›</button>';
+  if (a.status === 'queued') return '<span class="pill">분석 대기</span>';
+  if (a.status === 'running') return '<span class="pill run"><span class="spin" style="width:10px;height:10px"></span>분석 중</span>';
+  const label = a.status === 'interrupted' ? '분석 중단됨' : '분석 실패';
+  return rep ? '<button class="pill bad"'+rep+' title="'+esc(a.error||'')+'">'+label+' ›</button>'
+             : '<span class="pill bad" title="'+esc(a.error||'')+'">'+label+'</span>';
+}
+
+function renderClips(){
+  const st = S.col;
+  if (st.day == null && st.days.length) st.day = st.days[0].day;
+  const list = st.clips.filter(c => !st.day || c.day === st.day);
+  const nSel = list.filter(c => st.sel.has(c.clip_id)).length;
+  const total = st.days.reduce((a, d) => a + d.count, 0);
+
+  const dayOpts = '<option value="">전체 ('+total+')</option>'
+    + st.days.map(d => '<option value="'+d.day+'"'+(d.day===st.day?' selected':'')+'>'+dayText(d.day)+' ('+d.count+')</option>').join('');
+
+  const rows = list.map(c => {
+    const on = st.sel.has(c.clip_id);
+    const stPill = c.status === 'saving' ? '<span class="pill run">저장 중</span>'
+                 : c.status === 'failed' ? '<span class="pill bad" title="'+esc(c.error||'')+'">저장 실패</span>' : '';
+    const imp = c.status !== 'ready' ? ''
+      : (c.impact_audio_frame != null
+          ? '<span class="pill" title="소리로 찾은 임팩트 프레임">⚡ '+esc(c.impact_audio_frame)+'f</span>'
+          : '<span class="pill" title="오디오 임팩트를 찾지 못했습니다">임팩트 없음</span>');
+    const meta = [c.tag, secText(c.duration_sec), c.measured_fps ? c.measured_fps + 'fps' : ''].filter(Boolean).join(' · ');
+    return '<div class="crow'+(on?' on':'')+'" data-c="'+esc(c.clip_id)+'">'
+      + '<input type="checkbox" class="cb"'+(on?' checked':'')+' tabindex="-1">'
+      + '<span class="t"><b>'+clipTime(c.clip_id)+'</b><span>'+dayText(c.day)+'</span></span>'
+      + '<span class="who"><span class="nm">'+esc(playerLabel(c.player_id))+'</span><span class="meta">'+esc(meta)+'</span></span>'
+      + '<span class="tags">'+stPill+imp+(c.analyses||[]).map(analysisPill).join('')+'</span>'
+      + '<button class="iconbtn" data-play="'+esc(c.clip_id)+'" aria-label="재생"'+(c.status==='ready'?'':' disabled')+'>'
+      + '<svg class="i" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg></button>'
+      + '</div>';
+  }).join('');
+
+  const nReady = list.filter(c => c.status === 'ready').length;
+  const nDone = list.filter(c => (c.analyses||[]).some(a => a.status === 'done')).length;
+
+  $('#clipsRoot').innerHTML = '<div class="clipbar">'
+    + '<select class="inp" id="clDay">'+dayOpts+'</select>'
+    + '<label class="chk"><input type="checkbox" id="clAll"'+(list.length && nSel===list.length?' checked':'')+'> 전체 선택</label>'
+    + '<span class="dim grow" style="font-size:13px">'+(nSel ? '선택 '+nSel+'개' : '')+'</span>'
+    + '<button class="btn sm" id="clCap">촬영</button>'
+    + '<button class="btn sm" id="clAssign"'+(nSel?'':' disabled')+'>선수·태그</button>'
+    + '<button class="btn sm danger" id="clDel"'+(nSel?'':' disabled')+'>삭제</button>'
+    + '<button class="btn sm primary" id="clAna"'+(nSel?'':' disabled')+'>분석하기</button>'
+    + '</div>'
+    + '<div class="pad">'
+    + '<div class="sect-t">클립 '+list.length+'개 · 저장됨 '+nReady+' · 분석 완료 '+nDone+'</div>'
+    + (list.length ? '<div class="card" style="overflow:hidden">'+rows+'</div>'
+        : emptyHTML('수집한 영상이 없습니다', '“촬영”으로 녹화를 시작하세요. 녹화만 하고 분석은 여기서 나중에 합니다.'))
+    + '</div>';
+
+  const selected = ()=> list.filter(c => st.sel.has(c.clip_id)).map(c => c.clip_id);
+  $('#clDay').onchange = e => { st.day = e.target.value; st.sel.clear(); renderClips(); };
+  $('#clAll').onchange = e => {
+    if (e.target.checked) list.forEach(c => st.sel.add(c.clip_id)); else st.sel.clear();
+    renderClips();
+  };
+  $('#clCap').onclick = ()=> enterCollect();
+  $('#clAssign').onclick = ()=> assignClipsSheet(selected());
+  $('#clAna').onclick = ()=> analyzeClipsSheet(selected());
+  $('#clDel').onclick = ()=> {
+    const ids = selected();
+    openSheet('<h3>클립 '+ids.length+'개 삭제</h3>'
+      + '<div class="muted">목록에서 지웁니다. 파일은 분석PC의 database/collect/_deleted 로 옮겨 둡니다.</div>'
+      + '<div class="acts"><button class="btn" data-close>취소</button><button class="btn danger" id="clDelOk">삭제</button></div>');
+    $('#clDelOk').onclick = ()=>{ closeSheet(); deleteClips(ids); };
+  };
+  $$('#clipsRoot .crow').forEach(row => row.onclick = e => {
+    const play = e.target.closest('[data-play]');
+    if (play){ playClip(play.dataset.play); return; }
+    const rep = e.target.closest('[data-rep]');
+    if (rep){
+      const [pid, rid] = rep.dataset.rep.split('|');
+      S.repBack = 'clips';
+      openReport(pid, rid);
+      return;
+    }
+    const id = row.dataset.c;
+    if (st.sel.has(id)) st.sel.delete(id); else st.sel.add(id);
+    renderClips();
+  });
+}
+
+function playerOptionsHTML(sel){
+  const teamNames = new Set(S.teams.map(t => t.name));
+  const group = (label, ps) => ps.length ? '<optgroup label="'+esc(label)+'">'
+    + ps.map(p => '<option value="'+esc(p.id)+'"'+(p.id===sel?' selected':'')+'>'+esc(p.number+' '+p.name)+'</option>').join('')
+    + '</optgroup>' : '';
+  return S.teams.map(t => group(t.name, playersOfTeam(t.name))).join('')
+    + group('기타', S.players.filter(p => !teamNames.has(p.team)));
+}
+
+function playClip(cid){
+  const c = S.col.clips.find(x => x.clip_id === cid) || {};
+  const info = [secText(c.duration_sec), c.measured_fps ? c.measured_fps+'fps' : '',
+    c.impact_audio_frame != null ? '임팩트 '+c.impact_audio_frame+'프레임 (신뢰도 '+Number(c.impact_audio_confidence||0).toFixed(2)+')' : '임팩트 없음']
+    .filter(Boolean).join(' · ');
+  openSheet('<h3>'+esc(playerLabel(c.player_id))+' · '+clipTime(cid)+(c.tag?' · '+esc(c.tag):'')+'</h3>'
+    + '<div class="vidbox"><video controls playsinline autoplay muted preload="auto" src="'
+    + esc(url('/api/collect/clips/'+encodeURIComponent(cid)+'/video'))+'"></video></div>'
+    + '<div class="hintline">'+esc(info)+'</div>'
+    + '<div class="acts"><button class="btn" data-close>닫기</button></div>');
+}
+
+function assignClipsSheet(ids){
+  if (!ids.length) return;
+  const first = S.col.clips.find(c => c.clip_id === ids[0]) || {};
+  openSheet('<h3>클립 '+ids.length+'개 — 선수 · 태그</h3>'
+    + '<label class="f">선수</label><select id="asPid" class="inp"><option value="">선수 미지정</option>'+playerOptionsHTML(first.player_id)+'</select>'
+    + '<label class="f" style="margin-top:14px">태그</label>'
+    + '<input id="asTag" class="inp" maxlength="60" value="'+esc(first.tag||'')+'" placeholder="예: 직구, 티배팅">'
+    + '<div class="err" id="asErr"></div>'
+    + '<div class="acts"><button class="btn" data-close>취소</button><button class="btn primary" id="asGo">저장</button></div>');
+  $('#asGo').onclick = async ()=>{
+    const body = {player_id: $('#asPid').value || null, tag: $('#asTag').value.trim()};
+    $('#asGo').disabled = true;
+    try{
+      for (const id of ids) await api('/api/collect/clips/'+encodeURIComponent(id), {method:'POST', body:body});
+      closeSheet(); toast('저장했습니다');
+      await refreshCollectClips();
+    }catch(e){ $('#asErr').textContent = e.message; $('#asGo').disabled = false; }
+  };
+}
+
+function analyzeClipsSheet(ids){
+  const clips = S.col.clips.filter(c => ids.includes(c.clip_id));
+  const ready = clips.filter(c => c.status === 'ready');
+  if (!ready.length){ toast('저장이 끝난 클립을 고르세요'); return; }
+  const noPlayer = ready.filter(c => !c.player_id).length;
+  const items = new Set(S.ana.items.size ? S.ana.items : ['머리 고정','어깨-골반 회전','무게중심']);
+
+  openSheet('<h3>클립 '+ready.length+'개 분석</h3>'
+    + (ready.length < clips.length ? '<div class="hintline" style="margin:-6px 0 8px">저장 중이거나 실패한 '+(clips.length-ready.length)+'개는 빠집니다.</div>' : '')
+    + '<label class="f">선수</label><select id="caPid" class="inp">'
+    + '<option value="">'+(noPlayer === ready.length ? '선수를 고르세요' : '클립에 지정된 선수 그대로')+'</option>'
+    + playerOptionsHTML(null) + '</select>'
+    + '<div class="hintline">'+(noPlayer
+        ? '선수가 지정되지 않은 클립이 '+noPlayer+'개 있습니다. 선수를 고르면 선택한 모든 클립을 그 선수로 분석합니다.'
+        : '선수를 고르면 선택한 모든 클립을 그 선수로 분석합니다.')+'</div>'
+    + '<label class="f" style="margin-top:14px">분석 항목</label><div class="optlist" id="caOpts"></div>'
+    + '<div class="hintline">GPU 를 나눠 쓰지 않도록 한 번에 하나씩 순서대로 분석합니다. 진행은 목록에 표시됩니다.</div>'
+    + '<div class="err" id="caErr"></div>'
+    + '<div class="acts"><button class="btn" data-close>취소</button><button class="btn primary" id="caGo">분석 시작</button></div>');
+
+  const drawOpts = ()=>{
+    $('#caOpts').innerHTML = OPT_ORDER.map(k => '<button class="opt'+(items.has(k)?' on':'')+'" data-o="'+esc(k)+'">'
+      + '<span class="box"><svg class="i" viewBox="0 0 24 24" style="width:14px;height:14px;stroke-width:3"><path d="M5 12l5 5L19 7"/></svg></span>'
+      + '<span><span>'+esc(k)+'</span><small>'+esc(OPT_META[k].desc)+'</small></span></button>').join('');
+    $$('#caOpts .opt').forEach(b => b.onclick = ()=>{
+      const k = b.dataset.o;
+      if (items.has(k)) items.delete(k); else items.add(k);
+      drawOpts();
+    });
+  };
+  drawOpts();
+
+  $('#caGo').onclick = async ()=>{
+    const pid = $('#caPid').value;
+    if (!items.size){ $('#caErr').textContent = '분석 항목을 하나 이상 고르세요.'; return; }
+    if (!pid && noPlayer === ready.length){ $('#caErr').textContent = '선수를 고르세요.'; return; }
+    $('#caGo').disabled = true;
+    try{
+      const r = await api('/api/collect/analyze', {method:'POST', timeout:20000, body:{
+        clip_ids: ready.map(c => c.clip_id), player_id: pid || null, items: Array.from(items),
+      }});
+      closeSheet();
+      const sk = r.skipped || [];
+      toast((r.queued||[]).length + '개 분석을 대기열에 넣었습니다'
+        + (sk.length ? ' · ' + sk.length + '개 제외 (' + sk[0].reason + ')' : ''), 3800);
+      S.col.sel.clear();
+      await refreshCollectClips();
+      startCollectTick();
+    }catch(e){ $('#caErr').textContent = e.message; $('#caGo').disabled = false; }
+  };
+}
+
+async function deleteClips(ids){
+  if (!ids.length) return;
+  try{
+    const r = await api('/api/collect/clips/delete', {method:'POST', body:{clip_ids: ids}});
+    const sk = r.skipped || [];
+    if (sk.length) toast(sk.length + '개는 지우지 못했습니다: ' + sk[0].reason, 3200);
+    else toast((r.deleted||[]).length + '개 삭제했습니다');
+    ids.forEach(id => S.col.sel.delete(id));
+    await refreshCollectClips();
+  }catch(e){ toast('삭제 실패: ' + e.message, 3200); }
+}
+</script>
+
+<script>
 /* ═══════════ 차트 ═══════════ */
 function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
 
@@ -1388,6 +1919,16 @@ function drawChart(host, spec){
     const v = x0 + (x1-x0)*i/3;
     g.fillText(String(Math.round(v)), px(v), H-padB+7);
   }
+
+  // 기준선 (예: 0°, 90°) — 값 범위 안에 들어올 때만 점선으로
+  (spec.refY||[]).forEach(v => {
+    if (v < lo || v > hi) return;
+    const y = Math.round(py(v))+0.5;
+    g.save(); g.setLineDash([3,4]); g.strokeStyle = ink3; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(padL, y); g.lineTo(W-padR, y); g.stroke(); g.restore();
+    g.fillStyle = ink3; g.font = '10.5px system-ui'; g.textAlign = 'right'; g.textBaseline = 'bottom';
+    g.fillText(spec.fmtY ? spec.fmtY(v) : String(v), W-padR-2, y-2);
+  });
 
   // 마커
   if (spec.marker != null && spec.marker >= x0 && spec.marker <= x1){
@@ -1577,7 +2118,7 @@ function renderReport(){
              '<span class="v">'+(hs==null?'-':hs.toFixed(1))+'<small> / 10</small></span>',
              headNote(sm), hasSeries('head_stability'))
       + card('cs','체중이동',
-             '<span class="v">'+(ws==null?'-':ws.toFixed(1))+'<small> / 10</small></span>',
+             '<span class="v">'+(ws==null?'-':ws.toFixed(1))+'</span>',
              '뒷발 → 앞발 최대 이동폭', hasSeries('center_shift'))
       + card('rot','어깨 - 골반 회전', rotTable, '', hasSeries('shoulder_hip_rotation'))
       + card('hand','스윙 궤적 & 히팅포인트',
@@ -1610,11 +2151,12 @@ function impactNoteHTML(){
   const c = repImpactConf();
   const conf = (c != null) ? '  · 신뢰도 ' + (c*100).toFixed(0) + '%' : '';
   return '<div style="margin-top:6px;color:var(--accent);font-weight:600">'
-    + '⚡ 소리로 찾은 임팩트: 프레임 ' + (f+1) + conf + '</div>';
+    + '⚡ 소리로 찾은 임팩트: 프레임 ' + (f+1) + conf + '</div>' + windowNoteHTML();
 }
 function headNote(sm){
   const t = sm.head_score_thresholds;
-  if (Array.isArray(t) && t.length===2) return '척도 ' + t[0] + '–' + t[1] + 'px';
+  /* 옛 픽셀 척도(값이 1 이상)만 px 로 표시합니다. 현재 척도는 몸 크기 비율이라 px 가 아닙니다. */
+  if (Array.isArray(t) && t.length===2 && Math.max(t[0], t[1]) >= 1) return '척도 ' + t[0] + '–' + t[1] + 'px';
   return '';
 }
 function hasSeries(key){
@@ -1699,6 +2241,20 @@ function repImpactConf(){
   const sm = S.rep && S.rep.summary;
   const c = sm && sm.impact_audio_confidence;
   return (c == null || !Number.isFinite(Number(c))) ? null : Number(c);
+}
+/* 분석 구간 — 임팩트 전 0.7초 ~ 후 0.3초 (0-based 영상 프레임, 양끝 포함). analyze.py 가
+   summary.analysis_window 에 기록합니다. 없으면 null = 전 구간(기존 동작). */
+function repWindow(){
+  const w = S.rep && S.rep.summary && S.rep.summary.analysis_window;
+  if (!w || !Number.isFinite(Number(w.start_frame)) || !Number.isFinite(Number(w.end_frame))) return null;
+  return { s:Number(w.start_frame), e:Number(w.end_frame), pre:w.pre_sec, post:w.post_sec };
+}
+function windowNoteHTML(){
+  const w = repWindow();
+  if (!w) return '';
+  return '<div style="margin-top:6px;color:var(--accent);font-weight:600;font-size:13px">'
+    + '⚡ 임팩트 전 ' + (w.pre!=null?w.pre:0.7) + '초 ~ 후 ' + (w.post!=null?w.post:0.3)
+    + '초 구간(프레임 ' + (w.s+1) + '–' + (w.e+1) + ')에서 계산했습니다.</div>';
 }
 
 function ovlGeom(P){
@@ -1797,20 +2353,25 @@ const OVL_DRAW = {
     Q.forEach(function(p){ if (p) _dot(ctx,g,p,'#00ff00',5); });
   },
 
+  /* 궤적은 분석 구간(임팩트 전 0.7초 ~ 후 0.3초) 안에서만 그립니다. 구간이 없으면 skip_frames 부터. */
   hand_trace: function(ctx,g,d,i,meta){
-    const sk = meta.skip_frames;
-    if (i + 1 <= sk) return;
-    _poly(ctx, g, d.pts.slice(sk, i+1).filter(Boolean), '#ff0000', 3);
+    const w = repWindow();
+    const s = w ? w.s : meta.skip_frames, e = w ? Math.min(i, w.e) : i;
+    if (e < s) return;
+    _poly(ctx, g, d.pts.slice(s, e+1).filter(Boolean), '#ff0000', 3);
   },
 
   head_stability: function(ctx,g,d,i,meta){
-    const sk = meta.skip_frames;
-    if (i + 1 > sk){
-      d.pts.slice(sk, i+1).forEach(function(p){ if (p) _dot(ctx,g,p,'#ffc800',5); });
+    const w = repWindow();
+    const s = w ? w.s : meta.skip_frames, e = w ? Math.min(i, w.e) : i;
+    if (e >= s){
+      d.pts.slice(s, e+1).forEach(function(p){ if (p) _dot(ctx,g,p,'#ffc800',5); });
     }
-    if (d.anchor){
+    /* 기준원 — 구간이 있으면 구간 안 첫 유효 좌표 */
+    const anchor = w ? (d.pts.slice(w.s, w.e+1).find(Boolean) || null) : d.anchor;
+    if (anchor){
       ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2*g.s;
-      ctx.beginPath(); ctx.arc(_X(g,d.anchor),_Y(g,d.anchor),30*g.s,0,TAU); ctx.stroke();
+      ctx.beginPath(); ctx.arc(_X(g,anchor),_Y(g,anchor),30*g.s,0,TAU); ctx.stroke();
     }
   },
 
@@ -2009,16 +2570,23 @@ function openDetail(which){
 
   if (which === 'rot'){
     const n = (se && se.series && se.series.shoulder_hip_rotation) || {};
-    const x = n.frame || [];
+    const x0 = n.frame || [];
+    /* 분석 구간이 있으면 그 구간만 그립니다 — 구간 밖은 계산하지 않은 값(null)입니다.
+       차트 x(frame)는 1-based, 구간은 0-based 라 -1 해서 비교합니다. */
+    const w = repWindow();
+    const keep = x0.map((f,i)=>i).filter(i => !w || (x0[i]-1 >= w.s && x0[i]-1 <= w.e));
+    const pick = a => keep.map(i => (a||[])[i]);
+    const x = pick(x0);
     charts.push({id:'c1', x:x,
-      fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°',
-      series:[{name:'어깨', color:S1, data:n.shoulder_deg||[]}, {name:'골반', color:S2, data:n.hip_deg||[]}]});
+      fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
+      series:[{name:'어깨', color:S1, data:pick(n.shoulder_deg)}, {name:'골반', color:S2, data:pick(n.hip_deg)}]});
     if ((n.separation_deg||[]).length)
       charts.push({id:'c2', x:x,
-        fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°',
-        series:[{name:'상하체 분리각', color:AC, data:n.separation_deg}], zeroFloor:true});
+        fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
+        series:[{name:'상하체 분리각', color:AC, data:pick(n.separation_deg)}], zeroFloor:true});
     title = '어깨 - 골반 회전';
-    body = '<div class="muted" style="font-size:13.5px">양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>';
+    body = '<div class="muted" style="font-size:13.5px">양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>'
+         + windowNoteHTML();
   }
   else if (which === 'cs'){
     const n = (se && se.series && se.series.center_shift) || {};
@@ -2032,7 +2600,7 @@ function openDetail(which){
     /* 상체각도 — 골반↔몸통 선의 기울기. 무게중심과 같이 봐야 의미가 살아납니다:
        체중은 앞으로 갔는데 상체가 뒤에 남았는지 같은 패턴이 여기서 읽힙니다. */
     if ((n.trunk_tilt_deg||[]).some(v => v != null))
-      charts.push({id:'c1', x:n.frame||[], fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°',
+      charts.push({id:'c1', x:n.frame||[], fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
         series:[{name:'상체각도', color:AC, data:n.trunk_tilt_deg}]});
     title = '체중이동 · 상체각도';
     body = '<div class="muted" style="font-size:13.5px">'
@@ -2041,7 +2609,8 @@ function openDetail(which){
          + '<b style="color:var(--ink)">상체각도</b>는 골반 중심에서 몸통 중심으로 이은 선이 수직에서 기운 각도입니다 '
          + '(영상 오버레이에 그려진 그 선). <b style="color:var(--ink)">앞발 쪽으로 기울면 +, 뒷발 쪽이면 −</b>이고, '
          + '좌타·우타가 같은 부호로 비교됩니다.<br>'
-         + '특정 시점이 아니라 <b style="color:var(--ink)">전 구간의 흐름</b>으로 보세요.</div>';
+         + '특정 시점이 아니라 <b style="color:var(--ink)">전 구간의 흐름</b>으로 보세요.</div>'
+         + (repWindow() ? windowNoteHTML().replace('계산했습니다', '체중이동 폭을 계산했습니다') : '');
   }
   else if (which === 'head'){
     const n = (se && se.series && se.series.head_stability) || {};
@@ -2051,12 +2620,14 @@ function openDetail(which){
     title = '머리 고정';
     const std = num(sm.head_score_std_px);
     body = '<div class="muted" style="font-size:13.5px">머리 위치의 픽셀 좌표입니다. 선이 평평할수록 머리가 고정된 것입니다.'
-         + (std!=null ? ' 상하 흔들림 표준편차 <b style="color:var(--ink)">'+std.toFixed(2)+'px</b>.' : '') + '</div>';
+         + (std!=null ? ' 상하 흔들림 표준편차 <b style="color:var(--ink)">'+std.toFixed(2)+'px</b>.' : '') + '</div>'
+         + (repWindow() ? windowNoteHTML().replace('계산했습니다', '점수·머리 자취를 냈습니다') : '');
   }
   else if (which === 'hand'){
     title = '스윙 궤적 & 히팅포인트';
     body = '<div class="muted" style="font-size:13.5px">타격 손목이 지나간 자리를 영상 위에 그립니다. '
-         + '프레임을 하나씩 넘기면서 궤적이 그려지는 순서를 보세요.</div>';
+         + '프레임을 하나씩 넘기면서 궤적이 그려지는 순서를 보세요.</div>'
+         + (repWindow() ? windowNoteHTML().replace('계산했습니다', '궤적을 그립니다') : '');
   }
 
   /* 소리로 찾은 임팩트를 차트 세로선으로. 예전 opening-frame 프록시와 달리 실제
@@ -2160,7 +2731,7 @@ function openDetail(which){
       const r = sm.weight_shift_range, f0 = sm.weight_shift_from_frame, f1 = sm.weight_shift_to_frame;
       const t0 = sm.trunk_tilt_min_deg, t1 = sm.trunk_tilt_max_deg;
       let txt = (r != null)
-        ? ('체중이동 폭 ' + r + ' / 10  (프레임 ' + (f0!=null?f0:'-') + ' → ' + (f1!=null?f1:'-') + ')')
+        ? ('체중이동 폭 ' + r + '  (프레임 ' + (f0!=null?f0:'-') + ' → ' + (f1!=null?f1:'-') + ')')
         : '체중이동을 계산하지 못했습니다.';
       if (t0 != null && t1 != null) txt += '   ·   상체각도 ' + t0 + '° ~ ' + t1 + '°';
       impEl.textContent = txt;
@@ -2267,7 +2838,7 @@ $('#inId').addEventListener('keydown', e => { if (e.key==='Enter') $('#inPw').fo
 $('#btnLogout').onclick = ()=>{
   LS.del('keep');
   S.user = null;
-  clearTimeout(connTimer); stopPreview();
+  clearTimeout(connTimer); stopPreview(); stopCollectPreview();
   $('#app').classList.remove('on');
   $('#login').style.display = 'grid';
   $('#inPw').value = '';
@@ -2462,6 +3033,11 @@ $('#btnClearCache').onclick = async ()=>{
     };
   }
 
+  /* 들어온 주소의 ?p·?r 은 여기서 한 번 읽어 둡니다.
+     아래 go 래퍼가 주소를 지우기 때문에, 부팅이 끝난 뒤 읽으면 이미 비어 있습니다. */
+  var Q = new URLSearchParams(location.search);
+  var LINK_PID = Q.get('p'), LINK_RID = Q.get('r');
+
   /* ── 리포트를 열 때 주소창에도 남깁니다 (공유용) ── */
   var origOpen = window.openReport;
   window.openReport = function(pid, rid){
@@ -2470,6 +3046,14 @@ $('#btnClearCache').onclick = async ()=>{
         + '?p=' + encodeURIComponent(pid) + '&r=' + encodeURIComponent(rid));
     }catch(e){}
     return origOpen.apply(this, arguments);
+  };
+
+  /* 홈으로 돌아가면 주소도 되돌립니다 — 새로고침했을 때 아까 본 리포트가 아니라
+     선수 목록에서 다시 시작하도록. */
+  var origGo = window.go;
+  window.go = function(view){
+    if (view === 'home'){ try{ history.replaceState(null, '', location.pathname); }catch(e){} }
+    return origGo.apply(this, arguments);
   };
 
   /* ── 부팅 ── */
@@ -2489,17 +3073,14 @@ $('#btnClearCache').onclick = async ()=>{
     await bootstrap();
     mountBar();
 
-    var q = new URLSearchParams(location.search);
-    var pid = q.get('p'), rid = q.get('r');
-    var first = MF.reports[0];
-    if (!pid && first){ pid = first.player_id; }
-
-    var p = pid && playerById(pid);
+    /* 링크(?p·?r)로 들어왔을 때만 그 선수를 펴 줍니다.
+       그냥 들어오면 선수 목록에서 시작합니다 — 아무나 한 명이 열려 있으면 오해를 삽니다. */
+    var p = LINK_PID && playerById(LINK_PID);
     if (p){
       S.home.team = p.team;
       renderHome();
       await selectHomePlayer(p.id);
-      if (rid) openReport(pid, rid);
+      if (LINK_RID) openReport(LINK_PID, LINK_RID);
     }
   })();
 })();

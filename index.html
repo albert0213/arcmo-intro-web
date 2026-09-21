@@ -1675,18 +1675,21 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     var rows = batRows(frame);
     if (!rows.length) return;
 
-    /* stacked wrist-to-head segments: the swing plane */
+    /* over the footage the bat sits on a busy photographic background, so it is
+       drawn well under full strength — the skeleton stays the subject */
     ctx.save();
-    ctx.globalAlpha = .5;
+
+    /* stacked wrist-to-head segments: the swing plane */
+    ctx.globalAlpha = .28;
     ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = .7 * dpr;
     rows.forEach(function (r) {
       var w = batWrist(r);
       ctx.beginPath(); ctx.moveTo(X(w[0]), Y(w[1])); ctx.lineTo(X(r[3]), Y(r[4])); ctx.stroke();
     });
-    ctx.restore();
 
     /* barrel path */
-    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1 * dpr;
+    ctx.globalAlpha = .55;
+    ctx.lineWidth = 1 * dpr;
     batRuns(rows).forEach(function (run) {
       if (run.length < 2) return;
       ctx.beginPath();
@@ -1696,16 +1699,20 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     });
 
     var cur = (frame >= BAT_WIN[0] && frame <= BAT_WIN[1]) ? BAT_AT[frame] : null;
-    if (!cur) return;
+    if (!cur) { ctx.restore(); return; }
     var wr = batWrist(cur);
+    ctx.globalAlpha = .45;
     ctx.strokeStyle = '#ffb066'; ctx.lineWidth = .8 * dpr;
     ctx.beginPath(); ctx.moveTo(X(wr[0]), Y(wr[1])); ctx.lineTo(X(cur[3]), Y(cur[4])); ctx.stroke();
+    ctx.globalAlpha = .75;
     ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1.5 * dpr;
     ctx.beginPath(); ctx.moveTo(X(cur[1]), Y(cur[2])); ctx.lineTo(X(cur[3]), Y(cur[4])); ctx.stroke();
+    ctx.globalAlpha = .8;
     [[cur[1], cur[2], '#ffe2bf'], [cur[3], cur[4], '#e66a1f']].forEach(function (d) {
       ctx.beginPath(); ctx.arc(X(d[0]), Y(d[1]), 2 * dpr, 0, Math.PI * 2);
       ctx.fillStyle = d[2]; ctx.fill();
     });
+    ctx.restore();
   }
 
   var update = build(document.getElementById('skelSvg'), { onFrame: paint });

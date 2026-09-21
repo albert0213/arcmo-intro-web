@@ -374,16 +374,16 @@ footer{border-top:1px solid var(--line);padding:34px 0 46px;font-size:13px;color
 .cstage svg,.cstage video{display:block;width:100%;height:100%}
 .cstage video{object-fit:cover}
 
-.skel-bone{stroke:#3ecf8e;stroke-width:2.6;stroke-linecap:round;fill:none}
-.skel-bone.core{stroke:#7ee2b4;stroke-width:3}
+.skel-bone{stroke:#10b981;stroke-width:2.6;stroke-linecap:round;fill:none}
+.skel-bone.core{stroke:#34d399;stroke-width:3}
 .skel-joint{fill:#f2f7f4;stroke:none}
 .skel-hand{fill:none;stroke:#e2574c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .skel-guide{stroke:rgba(190,210,200,.18);stroke-width:1;stroke-dasharray:5 6}
 #batCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.bat-plane{stroke:#e66a1f;stroke-width:1;stroke-linecap:round}
-.bat-trail{fill:none;stroke:#e66a1f;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.bat-wrist{stroke:#ffb066;stroke-width:1.2;stroke-linecap:round}
-.bat-line{stroke:#e66a1f;stroke-width:2.4;stroke-linecap:round}
+.bat-plane{stroke:#e66a1f;stroke-width:.7;stroke-linecap:round}
+.bat-trail{fill:none;stroke:#e66a1f;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.bat-wrist{stroke:#ffb066;stroke-width:.9;stroke-linecap:round}
+.bat-line{stroke:#e66a1f;stroke-width:1.8;stroke-linecap:round}
 .bat-knob{fill:#ffe2bf}
 .bat-head{fill:#e66a1f}
 
@@ -391,7 +391,7 @@ footer{border-top:1px solid var(--line);padding:34px 0 46px;font-size:13px;color
   font-size:11.5px;color:#cfd9d4;letter-spacing:.01em;
   text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.6)}
 .stage-key i{display:inline-block;width:14px;height:2px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.stage-key .k-skel{background:#3ecf8e}
+.stage-key .k-skel{background:#10b981}
 .stage-key .k-hand{background:#e2574c}
 .stage-key .k-bat{background:#e66a1f}
 
@@ -637,8 +637,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
             <g id="skJoints"></g>
             <line id="skBatWrist" class="bat-wrist" x1="0" y1="0" x2="0" y2="0"/>
             <line id="skBatLine" class="bat-line" x1="0" y1="0" x2="0" y2="0"/>
-            <circle id="skBatKnob" class="bat-knob" r="2.6"/>
-            <circle id="skBatHead" class="bat-head" r="2.6"/>
+            <circle id="skBatKnob" class="bat-knob" r="2"/>
+            <circle id="skBatHead" class="bat-head" r="2"/>
           </svg>
           <span class="stage-key" aria-hidden="true">
             <span><i class="k-skel"></i><span data-en="16 joints">관절 16개</span></span>
@@ -1678,7 +1678,7 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     /* stacked wrist-to-head segments: the swing plane */
     ctx.save();
     ctx.globalAlpha = .5;
-    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1 * dpr;
+    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = .7 * dpr;
     rows.forEach(function (r) {
       var w = batWrist(r);
       ctx.beginPath(); ctx.moveTo(X(w[0]), Y(w[1])); ctx.lineTo(X(r[3]), Y(r[4])); ctx.stroke();
@@ -1686,7 +1686,7 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     ctx.restore();
 
     /* barrel path */
-    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1.6 * dpr;
+    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1 * dpr;
     batRuns(rows).forEach(function (run) {
       if (run.length < 2) return;
       ctx.beginPath();
@@ -1698,12 +1698,12 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     var cur = (frame >= BAT_WIN[0] && frame <= BAT_WIN[1]) ? BAT_AT[frame] : null;
     if (!cur) return;
     var wr = batWrist(cur);
-    ctx.strokeStyle = '#ffb066'; ctx.lineWidth = 1.2 * dpr;
+    ctx.strokeStyle = '#ffb066'; ctx.lineWidth = .8 * dpr;
     ctx.beginPath(); ctx.moveTo(X(wr[0]), Y(wr[1])); ctx.lineTo(X(cur[3]), Y(cur[4])); ctx.stroke();
-    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 2.4 * dpr;
+    ctx.strokeStyle = '#e66a1f'; ctx.lineWidth = 1.5 * dpr;
     ctx.beginPath(); ctx.moveTo(X(cur[1]), Y(cur[2])); ctx.lineTo(X(cur[3]), Y(cur[4])); ctx.stroke();
     [[cur[1], cur[2], '#ffe2bf'], [cur[3], cur[4], '#e66a1f']].forEach(function (d) {
-      ctx.beginPath(); ctx.arc(X(d[0]), Y(d[1]), 3 * dpr, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(X(d[0]), Y(d[1]), 2 * dpr, 0, Math.PI * 2);
       ctx.fillStyle = d[2]; ctx.fill();
     });
   }

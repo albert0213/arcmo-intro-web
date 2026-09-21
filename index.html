@@ -22,9 +22,9 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <script>
 /* before first paint, so a remembered light theme never flashes black */
-(function(){try{var t=localStorage.getItem('arcmo-theme');
-document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}
-catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+(function(){var t=null;try{t=localStorage.getItem('arcmo-theme');}catch(e){}
+if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}
+document.documentElement.setAttribute('data-theme',t);})();
 </script>
 <style>html{background:#000}html[data-theme="light"]{background:#f6f8f5}
 body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -315,7 +315,7 @@ section{position:relative;border-top:1px solid var(--line);padding:clamp(54px,6.
 /* rotating word in the headline */
 .rot{position:relative;display:inline-block;text-align:center;color:var(--brand);
   vertical-align:baseline;white-space:nowrap;
-  transition:width .42s cubic-bezier(.2,.7,.2,1)}
+  transition:width .3s cubic-bezier(.2,.7,.2,1)}
 .rot i{display:inline-block;font-style:normal;will-change:transform,opacity}
 .rot::after{content:"";position:absolute;left:.04em;right:.04em;bottom:-.02em;height:.055em;
   border-radius:99px;background:linear-gradient(90deg,transparent,var(--brand),transparent);
@@ -810,6 +810,13 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .minisk .skel-bone{stroke-width:6}
 .minisk .skel-bone.core{stroke-width:7}
 .minisk .skel-hand{stroke-width:4.5}
+/* the bat strokes scale with the bones, or the swing path vanishes at card size.
+   the plane is dimmed through its stroke alpha — a CSS opacity here would beat
+   the opacity attribute build() uses to hide the frames after this one */
+.minisk .bat-plane{stroke-width:1.1;stroke:rgba(230,106,31,.62)}
+.minisk .bat-trail{stroke-width:3.2}
+.minisk .bat-wrist{stroke-width:2}
+.minisk .bat-line{stroke-width:4.4}
 
 @media (max-width:520px){
   .nav-in{height:64px;gap:12px}
@@ -1074,10 +1081,10 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
                 <span class="kkt-av">코치</span>
                 <div class="kkt-col">
                   <span class="kkt-name" data-en="Coach Park">박코치</span>
-                  <span class="kkt-b" data-en="Suwoo's September report is ready. Head is a good deal steadier than last month.">어머님, 선우 9월 리포트 나왔습니다. 지난달보다 머리 흔들림이 확실히 줄었어요.</span>
+                  <span class="kkt-b" data-en="Suwoo's September report is ready. The lower body is turning much better, so the ball is carrying further. Looking forward to the games.">어머님, 선우 9월 리포트 나왔습니다. 하체 회전이 훨씬 좋아져서 타구가 더 멀리 갑니다. 경기 때가 기대돼요.</span>
                   <a class="kkt-card" href="parent.html">
                     <span class="th">
-                      <svg class="minisk" data-frame="79" viewBox="300 104 356 464" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+                      <svg class="minisk" data-frame="79" viewBox="306 62 308 478" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
                       <span class="thtag" data-en="September">9월 리포트</span>
                     </span>
                     <span class="tx">
@@ -1112,7 +1119,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
         <div class="mock">
           <div class="poster">
             <div class="pv">
-              <svg class="minisk" data-frame="79" viewBox="300 104 356 464" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+              <svg class="minisk" data-frame="79" viewBox="306 62 308 478" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
               <span class="tagx">ARCMO ANALYSIS</span>
             </div>
             <div class="pb">
@@ -1665,10 +1672,21 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
         document.documentElement.getAttribute('lang') === 'en' ? en : ko);
       if (persist) { try { localStorage.setItem('arcmo-theme', t); } catch (e) {} }
     }
+    function saved() {
+      try { var v = localStorage.getItem('arcmo-theme');
+            return v === 'light' || v === 'dark' ? v : null; } catch (e) { return null; }
+    }
     apply(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark', false);
     btn.addEventListener('click', function () {
       apply(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light', true);
     });
+    /* keep tracking the OS until they pick a side here; after that their choice wins */
+    var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+    if (mq) {
+      var onOS = function () { if (!saved()) apply(mq.matches ? 'light' : 'dark', false); };
+      if (mq.addEventListener) mq.addEventListener('change', onOS);
+      else if (mq.addListener) mq.addListener(onOS);
+    }
     /* the label is the one string the language switch cannot reach — it is an attribute */
     document.addEventListener('arcmo:lang', function (e) {
       btn.setAttribute('aria-label',
@@ -1772,15 +1790,15 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
         el.style.width = Math.ceil(measure(el, next)) + 'px';
         inner.animate(
           [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-0.42em)' }],
-          { duration: 240, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }
+          { duration: 180, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }
         ).finished.then(function () {
           inner.textContent = next;
           inner.animate(
             [{ opacity: 0, transform: 'translateY(0.42em)' }, { opacity: 1, transform: 'translateY(0)' }],
-            { duration: 400, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards' }
+            { duration: 300, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards' }
           );
         })['catch'](function () { inner.textContent = next; });
-      }, 2700);
+      }, 1500);
     });
   }
   function refit() { rotors.forEach(fitRotor); }
@@ -1979,10 +1997,18 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     };
   }
 
+  /* same paint order as the hero stage: swing plane and barrel path behind the
+     body, this frame's bat axis on top of it */
   Array.prototype.slice.call(document.querySelectorAll('.minisk')).forEach(function (svg) {
+    svg.appendChild(mk('g', { id: 'skBatPlane' }));
+    svg.appendChild(mk('path', { id: 'skBatTrail', class: 'bat-trail', d: '' }));
     svg.appendChild(mk('path', { id: 'skHand', class: 'skel-hand' }));
     svg.appendChild(mk('g', { id: 'skBones' }));
     svg.appendChild(mk('g', { id: 'skJoints' }));
+    svg.appendChild(mk('line', { id: 'skBatWrist', class: 'bat-wrist' }));
+    svg.appendChild(mk('line', { id: 'skBatLine', class: 'bat-line' }));
+    svg.appendChild(mk('circle', { id: 'skBatKnob', class: 'bat-knob', r: 4.6 }));
+    svg.appendChild(mk('circle', { id: 'skBatHead', class: 'bat-head', r: 4.6 }));
     var f = Math.max(1, Math.min(F, parseInt(svg.getAttribute('data-frame'), 10) || IMP));
     build(svg, { jointScale: 2.2 })(f - 1);
   });

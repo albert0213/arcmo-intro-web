@@ -18,9 +18,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
 <script>
 /* same key the landing page writes, so the report opens in the theme they chose */
-(function(){try{var t=localStorage.getItem('arcmo-theme');
-document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}
-catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+(function(){var t=null;try{t=localStorage.getItem('arcmo-theme');}catch(e){}
+if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}
+document.documentElement.setAttribute('data-theme',t);})();
 </script>
 <style>
 :root{

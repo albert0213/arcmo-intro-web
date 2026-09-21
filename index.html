@@ -367,8 +367,8 @@ footer{border-top:1px solid var(--line);padding:34px 0 46px;font-size:13px;color
 /* capture panel — dark because the footage is, not for effect */
 .panel{border:1px solid var(--line);border-radius:12px;background:var(--hud);
   overflow:hidden;box-shadow:var(--shadow)}
-.stagewrap{position:relative;aspect-ratio:600/500;background:#0a0f0c;overflow:hidden}
-@media (min-width:941px){.stagewrap{aspect-ratio:600/450}}
+.stagewrap{position:relative;aspect-ratio:700/580;background:#0a0f0c;overflow:hidden}
+@media (min-width:941px){.stagewrap{aspect-ratio:700/560}}
 .cstage{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s}
 .cstage.on{opacity:1;visibility:visible}
 .cstage svg,.cstage video{display:block;width:100%;height:100%}
@@ -379,12 +379,20 @@ footer{border-top:1px solid var(--line);padding:34px 0 46px;font-size:13px;color
 .skel-joint{fill:#f2f7f4;stroke:none}
 .skel-hand{fill:none;stroke:#e2574c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .skel-guide{stroke:rgba(190,210,200,.18);stroke-width:1;stroke-dasharray:5 6}
+.skel-bat-arc{fill:none;stroke:#e8912f;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.skel-bat-spoke{stroke:#e8912f;stroke-width:1;stroke-linecap:round}
+.skel-bat-now{stroke:#f0ece2;stroke-width:4;stroke-linecap:round}
+.skel-impact-mark{pointer-events:none}
+.skel-impact-dot{fill:#0a0f0c;stroke:#e2574c;stroke-width:2}
+.skel-impact-line{stroke:#e2574c;stroke-width:1;stroke-linecap:round}
+.skel-impact-label{fill:#9aa8a1;font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.04em}
 
 .stage-key{position:absolute;left:16px;bottom:12px;display:flex;gap:14px;
   font-size:11.5px;color:#9aa8a1;letter-spacing:.01em}
 .stage-key i{display:inline-block;width:14px;height:2px;border-radius:2px;margin-right:6px;vertical-align:middle}
 .stage-key .k-skel{background:#3ecf8e}
 .stage-key .k-hand{background:#e2574c}
+.stage-key .k-bat{background:#e8912f}
 
 .panel-read{display:grid;grid-template-columns:repeat(3,1fr);
   border-top:1px solid rgba(190,210,200,.13)}
@@ -606,11 +614,21 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     <div class="panel" id="console">
       <div class="stagewrap">
         <div class="cstage on" data-cs="skel">
-          <svg id="skelSvg" viewBox="180 96 600 476" preserveAspectRatio="xMidYMid meet"
-               role="img" aria-label="관절 16개를 추적한 실제 스윙 분석">
+          <svg id="skelSvg" viewBox="140 0 700 580" preserveAspectRatio="xMidYMid meet"
+               role="img" aria-label="관절 16개와 배트 궤적을 추적한 실제 스윙 분석">
+            <g id="skBat" aria-hidden="true">
+              <g id="skBatSpokes"></g>
+              <path id="skBatArc" class="skel-bat-arc" d=""/>
+            </g>
             <path id="skHand" class="skel-hand" d=""/>
             <g id="skBones"></g>
             <g id="skJoints"></g>
+            <line id="skBatNow" class="skel-bat-now" x1="0" y1="0" x2="0" y2="0" aria-hidden="true"/>
+            <g id="skImpact" class="skel-impact-mark" opacity="0" aria-hidden="true">
+              <circle class="skel-impact-dot" cx="0" cy="0" r="3.5"/>
+              <line class="skel-impact-line" x1="5" y1="-4" x2="12" y2="-10"/>
+              <text class="skel-impact-label" x="15" y="-11" data-en="HIT">임팩트</text>
+            </g>
           </svg>
         </div>
 
@@ -624,12 +642,13 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
         <span class="stage-key" aria-hidden="true">
           <span><i class="k-skel"></i>관절 16개</span>
           <span><i class="k-hand"></i>손 이동경로</span>
+          <span><i class="k-bat"></i><span data-en="Bat path">배트 궤적</span></span>
         </span>
       </div>
 
       <div class="panel-read">
         <div><span class="l" data-en="Head stability">머리 고정</span><b>9.4<span class="u">/10</span></b></div>
-        <div><span class="l" data-en="Peak separation">상하체 분리 (최대)</span><b><span id="roSep">0.0</span><span class="u">&deg;</span></b></div>
+        <div><span class="l" data-en="Peak separation">최대 분리각</span><b><span id="roSep">0.0</span><span class="u">&deg;</span></b></div>
         <div><span class="l" data-en="Weight on front foot">앞발 체중</span><b><span id="roShift">32</span><span class="u">%</span></b></div>
       </div>
 
@@ -1436,23 +1455,130 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
     return d;
   }
 
+  var BAT_LEN = 210;
+  var BAT_START = 47;   /* 0-based: frame 48 */
+  var BAT_END = 91;     /* 0-based: frame 92 */
+  /* f92 dropped: the follow-through curve has settled by f88, so a spoke there
+     lands within 0.1 deg of the previous one and draws straight on top of it */
+  var BAT_SPOKE_FRAMES = [48, 54, 60, 66, 72, 76, 79, 83, 88];
+  var BAT_KEYS = [
+    [40, -138, 0],
+    [48, -134, 1],
+    [55, -120, 3],
+    [65,  -85, 4],
+    [75,  -37, 6],
+    [79,   -2, 11]
+  ];
+
+  /* Cubic Hermite keys: [frame, degrees, degrees-per-frame]. The bat angle is
+     not driven off shoulder rotation — that signal flattens through contact,
+     which would leave the barrel nearly stationary exactly where it is fastest. */
+  function batAngle(frame) {
+    var k, a, b, u, u2, u3, h;
+
+    if (frame <= BAT_KEYS[0][0]) return BAT_KEYS[0][1];
+
+    for (k = 0; k < BAT_KEYS.length - 1; k++) {
+      a = BAT_KEYS[k];
+      b = BAT_KEYS[k + 1];
+
+      if (frame <= b[0]) {
+        h = b[0] - a[0];
+        u = (frame - a[0]) / h;
+        u2 = u * u;
+        u3 = u2 * u;
+
+        return (2 * u3 - 3 * u2 + 1) * a[1] +
+          (u3 - 2 * u2 + u) * h * a[2] +
+          (-2 * u3 + 3 * u2) * b[1] +
+          (u3 - u2) * h * b[2];
+      }
+    }
+
+    /* past contact, decelerate to +25 deg at f95, carrying the 11 deg/frame
+       tangent across the seam so the angle stays smooth */
+    if (frame < 95) {
+      u = (frame - 79) / 16;
+      return -2 + 27 * (1 - Math.pow(1 - u, 176 / 27));
+    }
+
+    return 25;
+  }
+
+  /* grip = midpoint of the two wrists, 5-frame moving average */
+  function batGrip(frameIndex) {
+    var x = 0, y = 0, n = 0;
+    var from = Math.max(0, frameIndex - 2);
+    var upto = Math.min(F - 1, frameIndex + 2);
+    var i, p;
+
+    for (i = from; i <= upto; i++) {
+      p = ARC.pts[i];
+      x += (p[4][0] + p[5][0]) / 2;
+      y += (p[4][1] + p[5][1]) / 2;
+      n++;
+    }
+    return [x / n, y / n];
+  }
+
   /* builds the skeleton into an svg element; returns update(frame) */
   function build(svg, opts) {
     opts = opts || {};
+
     var rs = opts.jointScale || 1;
     var gB = svg.querySelector('#skBones') || svg.appendChild(mk('g', {}));
     var gJ = svg.querySelector('#skJoints') || svg.appendChild(mk('g', {}));
     var hand = svg.querySelector('#skHand');
+    var batArc = svg.querySelector('#skBatArc');
+    var batNow = svg.querySelector('#skBatNow');
+    var batSpokeGroup = svg.querySelector('#skBatSpokes');
+    var impactMark = svg.querySelector('#skImpact');
+    var batFrames = null, batBarrels = null, spokes = [];
+    var i, grip, rad, st;
 
-    var bones = ARC.conns.map(function (c, i) {
-      return gB.appendChild(mk('line', { class: 'skel-bone' + (CORE[i] ? ' core' : '') }));
+    var bones = ARC.conns.map(function (c, index) {
+      return gB.appendChild(mk('line', { class: 'skel-bone' + (CORE[index] ? ' core' : '') }));
     });
     var joints = ARC.joints.map(function (_, j) {
       var r = ((j === 0 || j === 1 || j === 8 || j === 9) ? 4.2 : 3.4) * rs;
       return gJ.appendChild(mk('circle', { class: 'skel-joint', r: r }));
     });
+
+    /* the mockup stills omit these elements, so only the hero builds bat state */
+    if (batArc || batNow || batSpokeGroup || impactMark) {
+      batFrames = [];
+      batBarrels = [];
+
+      for (i = 0; i < F; i++) {
+        grip = batGrip(i);
+        rad = batAngle(i + 1) * Math.PI / 180;
+        st = {
+          grip: grip,
+          barrel: [grip[0] + Math.cos(rad) * BAT_LEN, grip[1] + Math.sin(rad) * BAT_LEN]
+        };
+        batFrames.push(st);
+        batBarrels.push(st.barrel);
+      }
+
+      if (batSpokeGroup) {
+        BAT_SPOKE_FRAMES.forEach(function (frame) {
+          var s = batFrames[frame - 1];
+          if (!s) return;
+          spokes.push({
+            frame: frame - 1,
+            line: batSpokeGroup.appendChild(mk('line', {
+              class: 'skel-bat-spoke',
+              x1: s.grip[0], y1: s.grip[1],
+              x2: s.barrel[0], y2: s.barrel[1],
+              opacity: 0
+            }))
+          });
+        });
+      }
+    }
+
     return function update(i) {
-      var p = ARC.pts[i];
+      var p = ARC.pts[i], st;
 
       ARC.conns.forEach(function (c, k) {
         var a = p[c[0]], z = p[c[1]];
@@ -1463,11 +1589,36 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
         joints[j].setAttribute('cx', a[0]); joints[j].setAttribute('cy', a[1]);
       });
       if (hand) hand.setAttribute('d', poly(ARC.hand, 0, i));
+
+      if (batFrames) {
+        st = batFrames[i];
+
+        if (batArc) {
+          batArc.setAttribute('d',
+            i < BAT_START ? '' : poly(batBarrels, BAT_START, Math.min(i, BAT_END)));
+        }
+        if (batNow) {
+          batNow.setAttribute('x1', st.grip[0]); batNow.setAttribute('y1', st.grip[1]);
+          batNow.setAttribute('x2', st.barrel[0]); batNow.setAttribute('y2', st.barrel[1]);
+        }
+        spokes.forEach(function (spoke) {
+          spoke.line.setAttribute('opacity', i >= spoke.frame ? 0.3 : 0);
+        });
+        if (impactMark) {
+          if (i >= IMP - 1) {
+            var hit = batFrames[IMP - 1].barrel;
+            impactMark.setAttribute('transform', 'translate(' + hit[0] + ' ' + hit[1] + ')');
+            impactMark.setAttribute('opacity', 1);
+          } else {
+            impactMark.setAttribute('opacity', 0);
+          }
+        }
+      }
+
       if (opts.onFrame) opts.onFrame(i);
     };
   }
 
-  /* static stills inside the mockups */
   Array.prototype.slice.call(document.querySelectorAll('.minisk')).forEach(function (svg) {
     svg.appendChild(mk('path', { id: 'skHand', class: 'skel-hand' }));
     svg.appendChild(mk('g', { id: 'skBones' }));

@@ -16,20 +16,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<script>
+/* same key the landing page writes, so the report opens in the theme they chose */
+(function(){try{var t=localStorage.getItem('arcmo-theme');
+document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}
+catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+</script>
 <style>
 :root{
   --bg:#000000; --card:#0a0d0c; --card-2:#0f1413; --ink:#eef4f1; --text:#b4bfba; --muted:#848e89;
   --dim:#59625d; --pline:#1a201d; --pline-2:#262e2a; --pbar:#151b19;
   --pgreen:#2fe39b; --brand:#2fe39b; --brand-2:#5cf0b7;
   --accent:#d9b174; --shadow:0 24px 60px -28px rgba(0,0,0,.9);
+  --wash:rgba(47,227,155,.08); --say-a:rgba(47,227,155,.13); --say-b:rgba(47,227,155,.03);
+  --say-edge:rgba(47,227,155,.22); --say-glow:rgba(47,227,155,.55); --on-brand:#03140d;
   color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f6f8f5; --card:#ffffff; --card-2:#f7f9f6; --ink:#0a1210; --text:#414b46; --muted:#697370;
+  --dim:#8a938f; --pline:#e0e5dd; --pline-2:#ccd4c9; --pbar:#eaefe8;
+  --pgreen:#0c8f62; --brand:#0c8f62; --brand-2:#0a7a53;
+  --accent:#8f6f36; --shadow:0 18px 40px -24px rgba(9,26,20,.26);
+  --wash:rgba(12,143,98,.07); --say-a:rgba(12,143,98,.10); --say-b:rgba(12,143,98,.02);
+  --say-edge:rgba(12,143,98,.2); --say-glow:rgba(12,143,98,.3); --on-brand:#ffffff;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);
   font-family:Geist,"IBM Plex Sans KR",system-ui,-apple-system,sans-serif;
   font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;
   word-break:keep-all;overflow-wrap:break-word;
-  background-image:radial-gradient(90% 40% at 50% 0%,rgba(47,227,155,.08),transparent 62%);
+  background-image:radial-gradient(90% 40% at 50% 0%,var(--wash),transparent 62%);
   background-repeat:no-repeat}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :focus-visible{outline:2px solid var(--brand-2);outline-offset:3px;border-radius:3px}
@@ -54,13 +71,13 @@ body{margin:0;background:var(--bg);color:var(--text);
 .chead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
 .chead b{font-size:15px;color:var(--ink);font-weight:650;letter-spacing:-.015em}
 
-.hero-say{position:relative;overflow:hidden;border-color:rgba(47,227,155,.22);
-  background:linear-gradient(165deg,rgba(47,227,155,.13),rgba(47,227,155,.03) 58%,var(--card));
-  box-shadow:var(--shadow),0 0 60px -26px rgba(47,227,155,.55)}
+.hero-say{position:relative;overflow:hidden;border-color:var(--say-edge);
+  background:linear-gradient(165deg,var(--say-a),var(--say-b) 58%,var(--card));
+  box-shadow:var(--shadow),0 0 60px -26px var(--say-glow)}
 .hero-say::before{content:"";position:absolute;left:14%;right:14%;top:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(47,227,155,.7),transparent)}
+  background:linear-gradient(90deg,transparent,var(--say-edge),transparent)}
 .hero-say .tag{display:inline-block;font-family:"Geist Mono",monospace;font-size:9.5px;
-  letter-spacing:.16em;color:var(--brand-2);border:1px solid rgba(47,227,155,.34);
+  letter-spacing:.16em;color:var(--brand-2);border:1px solid var(--say-edge);
   border-radius:999px;padding:3px 10px}
 .hero-say .big{margin:14px 0 0;font-size:20px;line-height:1.5;color:var(--ink);font-weight:600;letter-spacing:-.02em}
 .hero-say .big b{color:var(--brand);font-weight:700}
@@ -82,7 +99,7 @@ body{margin:0;background:var(--bg);color:var(--text);
 .tl{position:relative;flex:1;height:20px;cursor:pointer}
 .tl-track{position:absolute;left:0;right:0;top:8px;height:4px;border-radius:999px;background:var(--pline-2)}
 .tl-fill{position:absolute;left:0;top:8px;height:4px;border-radius:999px;background:var(--pgreen);width:0;
-  box-shadow:0 0 12px rgba(47,227,155,.5)}
+  box-shadow:0 0 12px var(--say-glow)}
 .tl-imp{position:absolute;top:3px;width:1px;height:14px;background:#c0392b}
 .tl-head{position:absolute;top:3px;width:3px;height:14px;border-radius:2px;background:var(--pgreen);margin-left:-1px}
 .scrub button{width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--pline-2);
@@ -99,8 +116,8 @@ body{margin:0;background:var(--bg);color:var(--text);
 .scval small{font-size:.42em;color:var(--muted);margin-left:3px}
 .scbar{height:7px;border-radius:999px;background:var(--pbar);overflow:hidden;margin-top:12px}
 .scbar i{display:block;height:100%;border-radius:999px;
-  background:linear-gradient(90deg,rgba(47,227,155,.5),var(--pgreen));
-  box-shadow:0 0 14px rgba(47,227,155,.35)}
+  background:linear-gradient(90deg,var(--say-edge),var(--pgreen));
+  box-shadow:0 0 14px var(--wash)}
 .sc p{margin:12px 0 0;font-size:13.5px;color:var(--muted);line-height:1.65}
 .vs{display:flex;justify-content:space-between;margin-top:12px;padding-top:11px;
   border-top:1px solid var(--pline);font-size:12px;color:var(--dim)}
@@ -113,7 +130,7 @@ body{margin:0;background:var(--bg);color:var(--text);
   font-weight:500;margin-top:2px}
 
 .memo .mtop{display:flex;align-items:center;gap:11px;margin-bottom:12px}
-.memo .av{width:38px;height:38px;border-radius:12px;background:var(--brand);color:#03140d;
+.memo .av{width:38px;height:38px;border-radius:12px;background:var(--brand);color:var(--on-brand);
   display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
 .memo .mtop b{display:block;font-size:14px;color:var(--ink);font-weight:600}
 .memo .mtop small{display:block;font-size:11.5px;color:var(--muted)}
@@ -122,7 +139,7 @@ body{margin:0;background:var(--bg);color:var(--text);
 .goal ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .goal li{position:relative;padding-left:26px;font-size:14px;color:var(--text);line-height:1.6}
 .goal li::before{content:"";position:absolute;left:0;top:2px;width:16px;height:16px;border-radius:5px;
-  border:1.6px solid rgba(47,227,155,.55)}
+  border:1.6px solid var(--say-edge)}
 
 .pfoot{margin-top:22px;padding:0 4px}
 .disc{margin:0;font-size:11.5px;color:var(--muted);line-height:1.7}

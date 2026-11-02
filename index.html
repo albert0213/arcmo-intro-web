@@ -774,6 +774,21 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
   color:var(--brand-2);padding-top:5px}
 .hw-spec .d b{display:block;font-size:17.5px;color:var(--ink);font-weight:620;letter-spacing:-.018em}
 .hw-spec .d p{margin-top:7px;font-size:15.5px;color:var(--muted);line-height:1.62}
+.hw-photos{margin-top:clamp(40px,4.6vw,64px)}
+.hw-photos-label{font-family:"Geist Mono",monospace;font-size:9.5px;letter-spacing:.16em;color:var(--accent);
+  margin-bottom:16px}
+.hw-photo-grid{display:grid;grid-template-columns:9fr 16fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hw-photo{margin:0;background:var(--surface);display:flex;flex-direction:column}
+.hw-photo .ph{aspect-ratio:3/4;overflow:hidden;background:#050706;border-bottom:1px solid var(--line)}
+.hw-photo .ph img{display:block;width:100%;height:100%;object-fit:cover;
+  transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.hw-photo.wide .ph{aspect-ratio:4/3}
+.hw-photo:hover .ph img{transform:scale(1.03)}
+.hw-photo figcaption{padding:17px 20px 20px}
+.hw-photo figcaption b{display:block;font-size:16.5px;color:var(--ink);font-weight:620}
+.hw-photo figcaption small{display:block;margin-top:5px;color:var(--muted);font-size:14px;line-height:1.5}
+@media (max-width:760px){.hw-photo-grid{grid-template-columns:1fr}.hw-photo .ph{aspect-ratio:4/5}.hw-photo.wide .ph{aspect-ratio:4/3}}
 .hw-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
   font-size:13px;color:var(--dim);line-height:1.65}
 
@@ -1308,7 +1323,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
       <p class="eyebrow">Hardware</p>
       <div>
         <h2 data-en="Equipment that looks like equipment.">장비도 장비답게.</h2>
-        <p class="lede" style="margin-top:18px" data-en="Today the camera, the mini PC and the tripod travel as three separate things. We are building them into one unit: stand it up, switch it on, shoot.">지금은 카메라와 미니PC, 삼각대를 각각 들고 다닙니다. 이 셋을 하나로 합친 일체형 유닛을 개발 중입니다. 세우고, 켜고, 찍으면 끝입니다.</p>
+        <p class="lede" style="margin-top:18px" data-en="Today the camera, the mini PC and the tripod travel together in one case. Next we are building them into a single unit: stand it up, switch it on, shoot.">지금은 카메라와 미니PC, 삼각대를 케이스 하나에 담아 다닙니다. 다음 단계로 이 셋을 하나로 합친 일체형 유닛을 개발 중입니다. 세우고, 켜고, 찍으면 끝입니다.</p>
       </div>
     </div>
 
@@ -1409,7 +1424,27 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
             </div>
           </div>
         </div>
-        <p class="hw-foot" data-en="Concept drawing of the all-in-one unit currently in development; the final specification may differ. Until it ships, the same analysis runs on a camera, a mini PC and a tripod carried separately.">개발 중인 일체형 유닛의 구성 개념도이며, 최종 사양은 달라질 수 있습니다. 출시 전까지는 카메라·미니PC·삼각대를 따로 가져가 동일한 분석을 제공합니다.</p>
+        <p class="hw-foot" data-en="Concept drawing of the all-in-one unit currently in development; the final specification may differ. Until it ships, the same analysis runs on the launch kit pictured below.">개발 중인 일체형 유닛의 구성 개념도이며, 최종 사양은 달라질 수 있습니다. 출시 전까지는 아래 사진의 런칭 키트로 동일한 분석을 제공합니다.</p>
+      </div>
+    </div>
+
+    <div class="hw-photos">
+      <p class="hw-photos-label rv" data-en="LAUNCH KIT · IN THE FIELD">LAUNCH KIT · 실제 장비와 납품 현장</p>
+      <div class="hw-photo-grid">
+        <figure class="hw-photo rv">
+          <div class="ph"><img src="img/hardware/kit-case-480.webp" srcset="img/hardware/kit-case-480.webp 480w, img/hardware/kit-case-960.webp 960w" sizes="(max-width:760px) 100vw, 36vw" width="960" height="1280" alt="알루미늄 케이스 안 폼에 촬영 유닛, 삼각대, 삼각대 헤드가 나란히 담긴 모습" loading="lazy" decoding="async"></div>
+          <figcaption>
+            <b data-en="Everything in one case">케이스 하나에 전부</b>
+            <small data-en="Capture unit, tripod and head, each in its own cut-out">촬영 유닛·삼각대·헤드가 각자 자리에 딱 맞게</small>
+          </figcaption>
+        </figure>
+        <figure class="hw-photo wide rv">
+          <div class="ph"><img src="img/hardware/delivery-batting-480.webp" srcset="img/hardware/delivery-batting-480.webp 480w, img/hardware/delivery-batting-960.webp 960w" sizes="(max-width:760px) 100vw, 64vw" width="960" height="720" alt="야외 타격장에서 삼각대에 세운 Arcmo 장비로 타자의 스윙을 촬영하며 태블릿을 들고 있는 모습" loading="lazy" decoding="async"></div>
+          <figcaption>
+            <b data-en="Delivered to the Changwon City Women's Baseball Team">창원시여자야구단 납품 현장</b>
+            <small data-en="One tripod at the outdoor cage; the hitter swings the way they always do">야외 타격장에 삼각대 하나 세우고, 타자는 평소처럼 칩니다</small>
+          </figcaption>
+        </figure>
       </div>
     </div>
   </div>

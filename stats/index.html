@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Arcmo 유입 통계</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+:root{
+  --bg:#f6f8f5;--surface:#ffffff;--ink:#0a1210;--text:#414b46;--muted:#697370;--line:#e0e5dd;
+  --bar:#0c8f62;--bar-hi:#075f40;--accent:#b5761f;--warn:#b3412f;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#060807;--surface:#0f1413;--ink:#eef4f1;--text:#b4bfba;--muted:#848e89;--line:#232b27;
+    --bar:#2fe39b;--bar-hi:#a8ffdd;--accent:#e2bb7d;--warn:#ff9b8f;color-scheme:dark}
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;color:var(--ink);margin:0}
+h2{font-size:16px;color:var(--ink);margin:30px 0 10px}
+.bar-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.meta{color:var(--muted);font-size:13px}
+select,button,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+button{cursor:pointer}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:18px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.tile small{display:block;color:var(--muted);font-size:12.5px}
+.tile b{display:block;color:var(--ink);font-size:26px;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile span{font-size:12.5px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12.5px}
+td.l{text-align:left;white-space:normal;min-width:160px}
+tr:last-child td{border-bottom:0}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:200px}
+.chart .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;border-radius:8px;
+  padding:6px 9px;white-space:nowrap;transform:translate(-50%,-110%);opacity:0;transition:opacity .1s}
+.axis{fill:var(--muted);font-size:11px}
+.grid{stroke:var(--line);stroke-width:1}
+.login{max-width:420px;margin:60px auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.login p{margin:0 0 12px}
+.login input{width:100%;margin-bottom:10px}
+.err{color:var(--warn)}
+.empty{color:var(--muted);padding:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="login" id="login" hidden>
+    <h1>Arcmo 유입 통계</h1>
+    <p class="meta">Apps Script 설정 때 받은 통계 열쇠(STATS_KEY)를 넣어 주세요. 이 브라우저에만 저장됩니다.</p>
+    <form id="keyForm"><input id="keyInput" type="password" autocomplete="off" placeholder="통계 열쇠"><button type="submit">열기</button></form>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <div id="dash" hidden>
+    <div class="bar-top">
+      <div><h1>Arcmo 유입 통계</h1><div class="meta" id="updated"></div></div>
+      <div>
+        <select id="days" aria-label="기간">
+          <option value="7">최근 7일</option><option value="30" selected>최근 30일</option><option value="90">최근 90일</option>
+        </select>
+        <button id="reload" type="button">새로고침</button>
+        <button id="logout" type="button">열쇠 지우기</button>
+      </div>
+    </div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <h2 id="chartTitle">일별 방문자</h2>
+    <div class="card chart" id="chart"></div>
+
+    <h2>유입 경로별 (누적)</h2>
+    <div class="card"><table id="srcTable"></table></div>
+
+    <h2>최근 도입 신청</h2>
+    <div class="card"><table id="leadTable"></table></div>
+  </div>
+</div>
+
+<script src="/assets/track.js"></script>
+<script>
+(function () {
+  var ENDPOINT = (window.Arcmo && window.Arcmo.endpoint) || '';
+  var KEY_NAME = 'arcmo-stats-key';
+  var $ = function (id) { return document.getElementById(id); };
+  function getKey() { try { return localStorage.getItem(KEY_NAME) || ''; } catch (e) { return ''; } }
+  function setKey(k) { try { k ? localStorage.setItem(KEY_NAME, k) : localStorage.removeItem(KEY_NAME); } catch (e) {} }
+
+  /* arcmo.xyz/stats/#key=... 로 열면 열쇠를 저장하고 주소에서 지웁니다. */
+  var m = location.hash.match(/key=([A-Za-z0-9]+)/);
+  if (m) { setKey(m[1]); history.replaceState(null, '', location.pathname); }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function n(v) { return Number(v || 0).toLocaleString('ko-KR'); }
+  function pct(a, b) { return b ? (Math.round(a / b * 1000) / 10) + '%' : '–'; }
+
+  function showLogin(msg) {
+    $('dash').hidden = true; $('login').hidden = false;
+    $('loginErr').textContent = msg || '';
+  }
+
+  function load() {
+    if (!ENDPOINT) { showLogin('아직 기록 주소(ENDPOINT)가 설정되지 않았습니다. assets/track.js 를 확인해 주세요.'); return; }
+    var key = getKey();
+    if (!key) { showLogin(''); return; }
+    $('updated').textContent = '불러오는 중…';
+    fetch(ENDPOINT + '?key=' + encodeURIComponent(key) + '&days=' + $('days').value)
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.ok) { setKey(''); showLogin('열쇠가 맞지 않습니다.'); return; }
+        $('login').hidden = true; $('dash').hidden = false;
+        render(d);
+      })
+      .catch(function () { $('updated').textContent = '불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.'; });
+  }
+
+  function render(d) {
+    $('updated').textContent = '마지막 계산 ' + d.updated + ' · 누적 기준';
+    var t = d.total;
+    var tiles = [
+      ['방문자', t.visitors, '명'],
+      ['자세히 보기 클릭', t.click_more, '방문자의 ' + pct(t.click_more, t.visitors)],
+      ['도입 신청 버튼', t.click_apply, '방문자의 ' + pct(t.click_apply, t.visitors)],
+      ['신청 화면에서 입력 시작', t.form_start, '신청 화면 조회 ' + n(t.apply_view)],
+      ['신청 완료', t.leads, '방문자 대비 ' + pct(t.leads, t.visitors)]
+    ];
+    $('tiles').innerHTML = tiles.map(function (x) {
+      return '<div class="tile"><small>' + x[0] + '</small><b>' + n(x[1]) + '</b><span>' + esc(x[2]) + '</span></div>';
+    }).join('');
+
+    $('chartTitle').textContent = '일별 방문자 (최근 ' + d.days + '일)';
+    drawChart(d.daily);
+
+    var rows = d.sources.map(function (s) {
+      return '<tr><td>' + esc(s.name) + '</td><td>' + n(s.visitors) + '</td><td>' + n(s.click_more) + '</td><td>' +
+        n(s.click_apply + s.main_click_apply) + '</td><td>' + n(s.form_start) + '</td><td>' + n(s.leads) + '</td><td>' +
+        pct(s.leads, s.visitors) + '</td></tr>';
+    }).join('');
+    $('srcTable').innerHTML = '<thead><tr><th>유입 경로</th><th>방문자</th><th>자세히 보기</th><th>도입 신청 버튼</th>' +
+      '<th>입력 시작</th><th>신청 완료</th><th>신청률</th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="7" class="empty">아직 기록이 없습니다.</td></tr>') + '</tbody>';
+
+    var leads = (d.leads || []).map(function (l) {
+      return '<tr><td>' + esc(l.time) + '</td><td class="l">' + esc(l.name || '-') + '</td><td><a href="tel:' +
+        esc(String(l.phone).replace(/[^0-9]/g, '')) + '">' + esc(l.phone) + '</a></td><td>' + esc(l.region || '-') +
+        '</td><td>' + esc(l.src) + '</td><td class="l">' + esc(l.memo || '') + '</td><td>' +
+        esc(l.status || '') + '</td></tr>';
+    }).join('');
+    $('leadTable').innerHTML = '<thead><tr><th>시각</th><th>레슨장·팀</th><th>연락처</th><th>지역</th>' +
+      '<th>유입</th><th>궁금한 점</th><th>상태</th></tr></thead><tbody>' +
+      (leads || '<tr><td colspan="7" class="empty">아직 신청이 없습니다.</td></tr>') + '</tbody>';
+  }
+
+  /* 한 계열 막대: 일별 방문자. 막대 위에 올리면 그날 숫자를 모두 보여줍니다. */
+  function drawChart(days) {
+    var el = $('chart');
+    var W = 1000, H = 200, L = 34, R = 8, T = 10, B = 26;
+    var max = Math.max(1, Math.max.apply(null, days.map(function (x) { return x.visitors; })));
+    var step = Math.pow(10, Math.floor(Math.log10(max)));
+    var top = Math.ceil(max / step) * step;
+    if (top / step > 5 && step >= 1) step = step * 2;
+    if (step < 1) step = 1;
+    var bw = (W - L - R) / days.length;
+    var y = function (v) { return T + (H - T - B) * (1 - v / top); };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="일별 방문자 막대 그래프">';
+    for (var g = 0; g <= top; g += step) {
+      svg += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(g) + '" y2="' + y(g) + '" vector-effect="non-scaling-stroke"/>';
+      svg += '<text class="axis" x="' + (L - 6) + '" y="' + (y(g) + 4) + '" text-anchor="end">' + g + '</text>';
+    }
+    days.forEach(function (d, i) {
+      var x = L + i * bw, h = (H - T - B) - (y(d.visitors) - T);
+      var w = Math.max(1, bw - 2);
+      if (d.visitors > 0) {
+        var r = Math.min(4, w / 2, h);
+        svg += '<path fill="var(--bar)" d="M' + (x + 1) + ',' + (H - B) + 'V' + (y(d.visitors) + r) +
+          'q0,-' + r + ' ' + r + ',-' + r + 'h' + (w - 2 * r) + 'q' + r + ',0 ' + r + ',' + r + 'V' + (H - B) + 'z"/>';
+      }
+      if (i === 0 || i === days.length - 1 || (days.length <= 31 && i % 7 === 0) || (days.length > 31 && i % 15 === 0)) {
+        svg += '<text class="axis" x="' + (x + bw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + d.date.slice(5) + '</text>';
+      }
+      svg += '<rect data-i="' + i + '" x="' + x + '" y="0" width="' + bw + '" height="' + (H - B) + '" fill="transparent"/>';
+    });
+    svg += '</svg><div class="tip" id="tip"></div>';
+    el.innerHTML = svg;
+    var tip = $('tip');
+    el.querySelector('svg').addEventListener('mousemove', function (e) {
+      var i = e.target.getAttribute && e.target.getAttribute('data-i');
+      if (i === null || i === undefined) { tip.style.opacity = 0; return; }
+      var d = days[+i], box = el.getBoundingClientRect();
+      tip.innerHTML = esc(d.date) + '<br>방문자 ' + n(d.visitors) + ' · 자세히 ' + n(d.click_more) +
+        ' · 신청버튼 ' + n(d.click_apply) + ' · 신청 ' + n(d.leads);
+      tip.style.left = Math.min(Math.max(e.clientX - box.left, 90), box.width - 90) + 'px';
+      tip.style.top = (e.clientY - box.top) + 'px';
+      tip.style.opacity = 1;
+    });
+    el.querySelector('svg').addEventListener('mouseleave', function () { tip.style.opacity = 0; });
+  }
+
+  $('keyForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    setKey($('keyInput').value.trim());
+    load();
+  });
+  $('reload').addEventListener('click', load);
+  $('days').addEventListener('change', load);
+  $('logout').addEventListener('click', function () { setKey(''); showLogin(''); });
+  load();
+})();
+</script>
+</body>
+</html>

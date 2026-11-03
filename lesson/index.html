@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arcmo — 레슨장 무료 테스트</title>
+<meta name="description" content="카메라 한 대로 끝내는 타격 동작 분석. 우리 레슨장에서 무료로 테스트해 보세요. 연락처와 레슨장 이름, 지역만 적으면 신청 끝.">
+<meta name="theme-color" content="#01312e">
+<link rel="canonical" href="https://arcmo.xyz/lesson/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arcmo">
+<meta property="og:url" content="https://arcmo.xyz/lesson/">
+<meta property="og:title" content="말로 하던 코칭을, 눈으로 보여주세요 — Arcmo">
+<meta property="og:description" content="카메라 한 대로 끝내는 타격 동작 분석. 우리 레슨장에서 무료로 테스트해 보세요.">
+<meta property="og:image" content="https://arcmo.xyz/lesson/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://arcmo.xyz/lesson/og.jpg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#01312e;
+  --bg-2:#002724;
+  --card:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.12);
+  --ink:#ffffff;
+  --text:#d3e2dd;
+  --muted:#9db5ae;
+  --orange:#f7b267;
+  --orange-2:#ffc887;
+  --on-orange:#1b1206;
+  --mint:#2fe39b;
+  --pad:20px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 70% at 50% -10%,#0b4a43 0%,var(--bg) 55%,var(--bg-2) 100%);
+  color:var(--text);font-family:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.55;word-break:keep-all}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:22px var(--pad) 140px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.top img{height:26px;width:auto}
+.top small{font-size:12px;color:var(--muted);letter-spacing:.02em}
+h1{color:var(--ink);font-size:clamp(30px,8.4vw,42px);line-height:1.22;letter-spacing:-.02em;margin:26px 0 12px;font-weight:700}
+h1 em{font-style:normal;color:var(--orange)}
+.sub{font-size:16.5px;margin:0 0 20px;color:var(--text)}
+.sub b{color:var(--ink);font-weight:600}
+.poster{border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(0,0,0,.7);
+  aspect-ratio:1/1;background:#01302d}
+.poster img{width:100%;height:100%;object-fit:cover}
+.points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.points li{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:14px 16px}
+.points svg{flex:0 0 22px;margin-top:2px;color:var(--mint)}
+.points b{display:block;color:var(--ink);font-size:15.5px;font-weight:600}
+.points span{font-size:14px;color:var(--muted)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:26px 0 8px}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:56px;padding:0 14px;border-radius:14px;
+  font-size:clamp(14.5px,4.2vw,16.5px);font-weight:700;text-decoration:none;text-align:center;white-space:nowrap;border:1px solid transparent;
+  transition:transform .15s ease,background .15s ease;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.98)}
+.btn.more{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:var(--ink)}
+.btn.more:hover{background:rgba(255,255,255,.14)}
+.btn.apply{background:var(--orange);color:var(--on-orange)}
+.btn.apply:hover{background:var(--orange-2)}
+.hint{text-align:center;font-size:13px;color:var(--muted);margin:6px 0 0}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px var(--pad) calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(0,39,36,0),rgba(0,39,36,.92) 30%,#002724);
+  transform:translateY(110%);transition:transform .25s ease}
+.dock.show{transform:none}
+.dock .actions{max-width:560px;margin:0 auto}
+footer{margin-top:34px;font-size:12.5px;color:var(--muted);text-align:center}
+footer a{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.dock{transition:none}.btn{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <img src="/lockup-white.png" alt="Arcmo" width="103" height="26">
+    <small>야구 타격 동작 분석</small>
+  </div>
+
+  <h1>말로 하던 코칭을,<br><em>눈으로</em> 보여주세요.</h1>
+  <p class="sub">카메라 한 대로 끝내는 타격 동작 분석.<br><b>우리 레슨장에서 무료로 테스트</b>해 보세요.</p>
+
+  <div class="actions" id="heroActions">
+    <a class="btn more" href="/" data-track="click_more" data-link="more">Arcmo 자세히 보기</a>
+    <a class="btn apply" href="/apply/" data-track="click_apply" data-link="apply">도입 신청하기</a>
+  </div>
+  <p class="hint">연락처 · 레슨장 이름 · 지역만 적으면 끝 · 30초</p>
+
+  <div class="poster" style="margin-top:22px">
+    <img src="/lesson/poster-720.jpg" width="720" height="720"
+         alt="Arcmo 포스터: 카메라 한 대·마커 없이, 스윙 한 번이면 리포트 완성, 두 스윙 임팩트 맞춰 비교, 케이스 하나·설치 3분">
+  </div>
+
+  <ul class="points">
+    <li>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <div><b>찾아가서 한 세션 무료 촬영</b><span>공간과 일정만 알려주시면 장비를 들고 가서 찍고, 리포트까지 만들어 드립니다.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <div><b>3평, 설치 3분</b><span>카메라 한 대와 접이식 매트. 마커도 슈트도 없습니다. 실내외 상관없어요.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <div><b>학부모에게는 카톡 링크 하나</b><span>스윙 한 번이면 리포트가 나오고, 지난 스윙과 임팩트를 맞춰 비교해 보여줍니다.</span></div>
+    </li>
+  </ul>
+
+  <footer>
+    <a href="https://arcmo.xyz/" data-track="click_more">arcmo.xyz</a> · <a href="mailto:baseball@arcmo.xyz">baseball@arcmo.xyz</a>
+  </footer>
+</main>
+
+<div class="dock" id="dock" aria-hidden="true">
+  <div class="actions">
+    <a class="btn more" href="/" data-track="click_more" data-link="more" tabindex="-1">Arcmo 자세히 보기</a>
+    <a class="btn apply" href="/apply/" data-track="click_apply" data-link="apply" tabindex="-1">도입 신청하기</a>
+  </div>
+</div>
+
+<script src="/assets/track.js"></script>
+<script>
+(function () {
+  var A = window.Arcmo;
+  if (A) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-link]'), function (a) {
+      a.setAttribute('href', A.withSrc(a.getAttribute('href')));
+    });
+    A.track('landing_view');
+  }
+
+  /* 위쪽 버튼이 화면 밖으로 나가면 아래에 같은 두 버튼을 띄웁니다. */
+  var hero = document.getElementById('heroActions');
+  var dock = document.getElementById('dock');
+  function setDock(show) {
+    dock.classList.toggle('show', show);
+    dock.setAttribute('aria-hidden', show ? 'false' : 'true');
+    Array.prototype.forEach.call(dock.querySelectorAll('a'), function (a) { a.tabIndex = show ? 0 : -1; });
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { setDock(!es[0].isIntersecting); }).observe(hero);
+  } else {
+    setDock(true);
+  }
+})();
+</script>
+</body>
+</html>

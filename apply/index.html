@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arcmo 도입 신청</title>
+<meta name="description" content="우리 레슨장에서 Arcmo 를 무료로 테스트해 보세요. 연락처와 레슨장 이름, 지역만 남기시면 연락드립니다.">
+<meta name="theme-color" content="#01312e">
+<link rel="canonical" href="https://arcmo.xyz/apply/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arcmo">
+<meta property="og:url" content="https://arcmo.xyz/apply/">
+<meta property="og:title" content="Arcmo 도입 신청 — 우리 레슨장에서 무료 테스트">
+<meta property="og:description" content="연락처, 레슨장 이름, 지역만 남기시면 연락드립니다. 30초면 끝나요.">
+<meta property="og:image" content="https://arcmo.xyz/lesson/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#01312e;
+  --bg-2:#002724;
+  --field:rgba(255,255,255,.07);
+  --field-focus:rgba(255,255,255,.11);
+  --line:rgba(255,255,255,.16);
+  --ink:#ffffff;
+  --text:#d3e2dd;
+  --muted:#9db5ae;
+  --orange:#f7b267;
+  --orange-2:#ffc887;
+  --on-orange:#1b1206;
+  --mint:#2fe39b;
+  --error:#ff9b8f;
+  --pad:20px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 60% at 50% -10%,#0b4a43 0%,var(--bg) 55%,var(--bg-2) 100%);
+  color:var(--text);font-family:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.55;word-break:keep-all}
+a{color:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:22px var(--pad) 48px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.top img{height:24px;width:auto;display:block}
+.top a.back{font-size:13.5px;color:var(--muted);text-decoration:none}
+h1{color:var(--ink);font-size:clamp(26px,7.2vw,34px);line-height:1.25;letter-spacing:-.02em;margin:26px 0 8px;font-weight:700}
+h1 em{font-style:normal;color:var(--orange)}
+.lead{margin:0 0 22px;font-size:15.5px}
+form{display:grid;gap:16px}
+label.f{display:grid;gap:7px}
+label.f > span{font-size:14px;font-weight:600;color:var(--ink)}
+label.f > span small{font-weight:400;color:var(--muted);margin-left:4px}
+input[type=text],input[type=tel],textarea{width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--field);
+  border:1px solid var(--line);border-radius:12px;padding:14px 14px;outline:none;-webkit-appearance:none;appearance:none}
+input::placeholder,textarea::placeholder{color:rgba(211,226,221,.45)}
+input:focus,textarea:focus{background:var(--field-focus);border-color:var(--orange)}
+input[aria-invalid=true]{border-color:var(--error)}
+textarea{min-height:92px;resize:vertical}
+.err{color:var(--error);font-size:13.5px;margin:-2px 0 0}
+.err:empty{display:none}
+.more-toggle{background:none;border:0;padding:0;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;
+  text-underline-offset:3px;cursor:pointer;justify-self:start}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+button.submit{min-height:58px;border:0;border-radius:14px;background:var(--orange);color:var(--on-orange);font:inherit;
+  font-size:17.5px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s,transform .15s}
+button.submit:hover{background:var(--orange-2)}
+button.submit:active{transform:scale(.985)}
+button.submit[disabled]{opacity:.65;cursor:progress}
+.notice{font-size:12.5px;color:var(--muted);margin:0}
+.notice details{margin-top:4px}
+.notice summary{cursor:pointer}
+.notice ul{margin:6px 0 0;padding-left:18px}
+.done{display:none;text-align:center;padding:40px 0 10px}
+.done svg{width:56px;height:56px;color:var(--mint)}
+.done h2{color:var(--ink);font-size:24px;margin:14px 0 8px}
+.done p{margin:0 0 22px}
+.btn2{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 20px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--ink);text-decoration:none;font-weight:600}
+.fallback{display:none;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:14.5px}
+.fallback p{margin:0 0 10px}
+.fallback .btn2{width:100%}
+body.is-done form,body.is-done .lead,body.is-done h1{display:none}
+body.is-done .done{display:block}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <a href="/" data-link><img src="/lockup-white.png" alt="Arcmo" width="95" height="24"></a>
+    <a class="back" href="/lesson/" data-link>← 소개로</a>
+  </div>
+
+  <h1>우리 레슨장에서<br><em>무료로</em> 테스트해 보세요.</h1>
+  <p class="lead">세 가지만 적어 주시면 일정 잡으러 연락드려요. 나머지는 통화로 정하면 됩니다.</p>
+
+  <form id="f" novalidate>
+    <label class="f">
+      <span>연락처</span>
+      <input type="tel" name="phone" id="phone" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000" required
+             aria-describedby="phoneErr">
+      <p class="err" id="phoneErr" role="alert"></p>
+    </label>
+
+    <label class="f">
+      <span>레슨장 / 팀 이름</span>
+      <input type="text" name="name" id="name" autocomplete="organization" placeholder="예: OO베이스볼 아카데미" required
+             maxlength="80" aria-describedby="nameErr">
+      <p class="err" id="nameErr" role="alert"></p>
+    </label>
+
+    <label class="f">
+      <span>지역</span>
+      <input type="text" name="region" id="region" autocomplete="address-level2" placeholder="예: 서울 강남구" required
+             maxlength="80" aria-describedby="regionErr">
+      <p class="err" id="regionErr" role="alert"></p>
+    </label>
+
+    <button type="button" class="more-toggle" id="moreToggle" aria-expanded="false" aria-controls="memoWrap">+ 궁금한 점 남기기</button>
+    <label class="f" id="memoWrap" hidden>
+      <span>궁금한 점<small>선택</small></span>
+      <textarea name="memo" maxlength="1000" placeholder="예: 실내 레슨장 4평인데 설치 가능한가요? 가격이 궁금해요."></textarea>
+    </label>
+
+    <div class="hp" aria-hidden="true">
+      <label>비워 두세요 <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <button class="submit" type="submit" id="submit">무료 테스트 신청하기</button>
+
+    <div class="notice">
+      신청하시면 상담 연락에 필요한 정보만 받아 연락 목적으로만 씁니다.
+      <details>
+        <summary>개인정보 수집·이용 안내</summary>
+        <ul>
+          <li>항목: 연락처, 레슨장·팀 이름, 지역(필수), 문의 내용(선택)</li>
+          <li>목적: 도입 상담과 테스트 일정 안내</li>
+          <li>보관: 상담이 끝난 뒤 1년 안에 파기하며, 요청하시면 바로 지웁니다.</li>
+          <li>문의: <a href="mailto:baseball@arcmo.xyz">baseball@arcmo.xyz</a></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="fallback" id="fallback" role="alert">
+      <p id="fallbackMsg">지금은 온라인 접수가 잠시 안 됩니다. 아래 버튼을 누르면 입력하신 내용으로 메일이 열려요.</p>
+      <a class="btn2" id="mailBtn" href="mailto:baseball@arcmo.xyz">메일로 신청 보내기</a>
+    </div>
+  </form>
+
+  <section class="done" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>
+    <h2>신청이 접수됐어요</h2>
+    <p>확인하는 대로 남겨주신 번호로 연락드릴게요.</p>
+    <a class="btn2" href="/" data-link data-track="click_more_after_apply">Arcmo 더 둘러보기</a>
+  </section>
+</main>
+
+<script src="/assets/track.js"></script>
+<script>
+(function () {
+  var A = window.Arcmo || { track: function () {}, lead: function () { return Promise.reject(new Error('no-track')); }, withSrc: function (u) { return u; } };
+  Array.prototype.forEach.call(document.querySelectorAll('[data-link]'), function (a) {
+    a.setAttribute('href', A.withSrc(a.getAttribute('href')));
+  });
+  A.track('apply_view');
+
+  var form = document.getElementById('f');
+  var phone = document.getElementById('phone');
+  var submit = document.getElementById('submit');
+  var fallback = document.getElementById('fallback');
+  var mailBtn = document.getElementById('mailBtn');
+  var moreToggle = document.getElementById('moreToggle');
+  var memoWrap = document.getElementById('memoWrap');
+
+  moreToggle.addEventListener('click', function () {
+    memoWrap.hidden = false;
+    moreToggle.hidden = true;
+    memoWrap.querySelector('textarea').focus();
+  });
+
+  var started = false;
+  form.addEventListener('input', function () {
+    if (!started) { started = true; A.track('form_start'); }
+  });
+
+  /* 010-1234-5678 꼴로 맞춰 보여줍니다. */
+  function fmt(d) {
+    if (d.indexOf('02') === 0) {
+      if (d.length <= 2) return d;
+      if (d.length <= 5) return d.slice(0, 2) + '-' + d.slice(2);
+      if (d.length <= 9) return d.slice(0, 2) + '-' + d.slice(2, d.length - 4) + '-' + d.slice(-4);
+      return d.slice(0, 2) + '-' + d.slice(2, 6) + '-' + d.slice(6, 10);
+    }
+    if (d.length <= 3) return d;
+    if (d.length <= 7) return d.slice(0, 3) + '-' + d.slice(3);
+    if (d.length <= 10) return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
+    return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7, 11);
+  }
+  phone.addEventListener('input', function () {
+    phone.value = fmt(phone.value.replace(/\D/g, '').slice(0, 11));
+  });
+  function valid(d) { return /^0\d{8,10}$/.test(d); }
+  function setErr(input, msg) {
+    document.getElementById(input.id + 'Err').textContent = msg;
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  }
+  /* 칸마다 빠진 것을 알려 주고, 첫 번째 빠진 칸을 돌려줍니다. */
+  function check() {
+    var bad = null;
+    var d = phone.value.replace(/\D/g, '');
+    var rules = [
+      [phone, valid(d) ? '' : (d ? '번호를 다시 확인해 주세요.' : '연락받으실 번호를 적어 주세요.')],
+      [document.getElementById('name'), document.getElementById('name').value.trim() ? '' : '레슨장이나 팀 이름을 적어 주세요.'],
+      [document.getElementById('region'), document.getElementById('region').value.trim() ? '' : '지역을 적어 주세요. (예: 서울 강남구)']
+    ];
+    rules.forEach(function (r) { setErr(r[0], r[1]); if (r[1] && !bad) bad = r[0]; });
+    return bad;
+  }
+  form.addEventListener('input', function (e) {
+    if (e.target.getAttribute && e.target.getAttribute('aria-invalid') === 'true') {
+      if (e.target === phone ? valid(phone.value.replace(/\D/g, '')) : e.target.value.trim()) setErr(e.target, '');
+    }
+  });
+
+  function values() {
+    var fd = new FormData(form);
+    return {
+      phone: fmt(String(fd.get('phone') || '').replace(/\D/g, '')),
+      name: String(fd.get('name') || '').trim().slice(0, 80),
+      region: String(fd.get('region') || '').trim().slice(0, 80),
+      memo: String(fd.get('memo') || '').trim().slice(0, 1000),
+      website: String(fd.get('website') || '')
+    };
+  }
+
+  function showFallback(v, why) {
+    var body = [
+      '[Arcmo 도입 신청]',
+      '연락처: ' + v.phone,
+      '레슨장/팀: ' + v.name,
+      '지역: ' + v.region,
+      '궁금한 점: ' + (v.memo || '-'),
+      '',
+      '(유입: ' + (A.src || 'direct') + ')'
+    ].join('\n');
+    mailBtn.href = 'mailto:baseball@arcmo.xyz?subject=' + encodeURIComponent('Arcmo 도입 신청 (' + (v.name || v.phone) + ')') +
+      '&body=' + encodeURIComponent(body);
+    fallback.style.display = 'block';
+    A.track('lead_fallback', { reason: why });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = values();
+    var bad = check();
+    if (bad) { bad.focus(); return; }
+    if (v.website) { document.body.classList.add('is-done'); return; } /* 자동 입력 봇 */
+
+    submit.disabled = true;
+    submit.textContent = '보내는 중…';
+    A.lead(v).then(function () {
+      document.body.classList.add('is-done');
+      window.scrollTo(0, 0);
+    }).catch(function (err) {
+      submit.disabled = false;
+      submit.textContent = '무료 테스트 신청하기';
+      showFallback(v, err && err.message === 'no-endpoint' ? 'no-endpoint' : 'network');
+    });
+  });
+})();
+</script>
+</body>
+</html>

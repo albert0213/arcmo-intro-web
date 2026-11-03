@@ -211,6 +211,12 @@ body::after{
 .cta.ghost:hover{background:var(--surface-2);border-color:var(--brand);color:var(--ink);
   box-shadow:0 14px 34px -18px rgba(47,227,155,.45)}
 @media (max-width:1040px){.nav-links{display:none}}
+/* community visitors: a pinned apply button, so the form is one tap away anywhere on the page */
+.apply-dock{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:69;transform:translate(-50%,140%);
+  transition:transform .3s cubic-bezier(.2,.7,.2,1);padding:14px 26px;font-size:16px;border-radius:999px;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.6)}
+.apply-dock.show{transform:translate(-50%,0)}
+.apply-dock:hover{transform:translate(-50%,-2px)}
 
 /* ---------- shared type ---------- */
 .eyebrow{
@@ -610,6 +616,12 @@ a.shot{text-decoration:none;color:inherit}
 .contact .cta:hover{background:#5cf0b7;border-color:#5cf0b7}
 .contact .cta{margin-top:34px;padding:14px 26px;font-size:15.5px;
   font-family:"Geist Mono",monospace;font-weight:500;letter-spacing:-.01em}
+.contact-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:34px}
+.contact .contact-actions .cta{margin-top:0}
+.contact .cta.apply-main{font-family:inherit;letter-spacing:-.005em;font-size:16px;font-weight:650}
+.contact .cta.ghost{background:transparent;color:#eef4f1;border-color:rgba(190,210,200,.28)}
+.contact .cta.ghost:hover{background:rgba(255,255,255,.06);border-color:#2fe39b}
+.contact p.contact-note{font-size:13.5px;margin-top:14px;color:#848e89}
 .contact-mark{display:block;height:54px;width:auto;margin:0 auto 26px;
   filter:drop-shadow(0 0 30px rgba(47,227,155,.35))}
 
@@ -862,7 +874,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path
              d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z"/></svg>
       </button>
-      <a class="cta" href="mailto:baseball@arcmo.xyz?subject=Arcmo%20도입%20문의" data-en="Get in touch">도입 문의</a>
+      <a class="cta" href="/apply/" data-apply data-track="main_click_apply" data-en="Get in touch">도입 신청</a>
     </div>
     <div class="progress" id="progress"></div>
   </div>
@@ -960,7 +972,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     <div class="hero-bot">
       <p class="lede" data-en="Scientific coaching, in the studio you already run. No markers, no suit — computer vision finds the body in the footage and pulls the coordinates of sixteen joints, frame by frame at 150 fps. One camera, one foldable mat, about ten square meters.">과학적인 코칭을, 지금 쓰고 계신 레슨장에서 그대로. 마커도 슈트도 없이 컴퓨터 비전이 영상에서 몸을 찾아 150fps로 관절 16개의 좌표를 프레임마다 뽑아냅니다. 카메라 한 대와 접이식 매트, 3평이면 됩니다.</p>
       <div class="hero-actions">
-        <a class="cta" href="mailto:baseball@arcmo.xyz?subject=Arcmo%20도입%20문의" data-en="Request a pilot">도입 문의하기</a>
+        <a class="cta" href="/apply/" data-apply data-track="main_click_apply" data-en="Request a pilot">무료 테스트 신청하기</a>
         <a class="cta ghost" href="#coach" data-en="Run the numbers">수익성 계산해보기</a>
       </div>
     </div>
@@ -1622,7 +1634,11 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     <p class="eyebrow">Contact</p>
     <h2 data-en="Running a lesson studio or a team? Let's shoot one session.">레슨장이나 팀을 운영하고 계신가요? 한 세션만 찍어보시죠.</h2>
     <p data-en="Tell us the room and the schedule. We bring the camera and the mat, shoot a session, and hand back the reports — nothing to prepare on your side.">공간과 일정만 알려주시면 카메라와 매트를 가지고 찾아가 한 세션을 촬영하고, 리포트를 만들어 드립니다. 준비하실 것은 없습니다.</p>
-    <a class="cta" href="mailto:baseball@arcmo.xyz?subject=Arcmo%20도입%20문의">baseball@arcmo.xyz</a>
+    <div class="contact-actions">
+      <a class="cta apply-main" href="/apply/" data-apply data-track="main_click_apply" data-en="Request a free test">무료 테스트 신청하기</a>
+      <a class="cta ghost" href="mailto:baseball@arcmo.xyz?subject=Arcmo%20도입%20문의">baseball@arcmo.xyz</a>
+    </div>
+    <p class="contact-note" data-en="Just a phone number — takes 30 seconds.">연락처 하나만 남기면 됩니다 · 30초</p>
   </div>
 </section>
 
@@ -2292,5 +2308,28 @@ const ARC={"fps":150,"impact":79,"conns":[[0,1],[0,2],[2,4],[1,3],[3,5],[4,6],[5
 })();
 </script>
 
+<a class="cta apply-dock" id="applyDock" href="/apply/" data-apply data-track="main_click_apply" hidden>무료 테스트 신청하기</a>
+<script src="/assets/track.js"></script>
+<script>
+(function () {
+  var A = window.Arcmo;
+  if (!A) return;
+  A.track('main_view');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-apply]'), function (a) {
+    a.setAttribute('href', A.withSrc(a.getAttribute('href')));
+  });
+  /* 커뮤니티 글에서 넘어온 분께만, 첫 화면을 지나면 신청 버튼을 아래에 띄웁니다. */
+  if (A.src === 'direct') return;
+  var dock = document.getElementById('applyDock');
+  var hero = document.querySelector('.hero-actions');
+  var contact = document.querySelector('.contact');
+  if (!dock || !hero || !('IntersectionObserver' in window)) return;
+  dock.hidden = false;
+  var heroIn = true, contactIn = false;
+  function upd() { dock.classList.toggle('show', !heroIn && !contactIn); }
+  new IntersectionObserver(function (es) { heroIn = es[0].isIntersecting; upd(); }).observe(hero);
+  if (contact) new IntersectionObserver(function (es) { contactIn = es[0].isIntersecting; upd(); }).observe(contact);
+})();
+</script>
 </body>
 </html>

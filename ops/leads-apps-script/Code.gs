@@ -9,6 +9,10 @@
  * 설정 방법은 같은 폴더의 README.md 를 보세요.
  */
 
+/* 시트에 붙은 스크립트(확장 프로그램 → Apps Script)면 비워 두고,
+   따로 만든 스크립트면 기록할 스프레드시트 id 를 적습니다. */
+var SHEET_ID = '';
+
 var EVENTS = 'events';
 var LEADS = 'leads';
 var STATS = '통계';
@@ -31,7 +35,7 @@ var SOURCE_NAMES = {
 /* ────────────────── 처음 한 번 실행 ────────────────── */
 
 function setup() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = book_();
   sheet_(ss, EVENTS, EVENT_HEADERS);
   sheet_(ss, LEADS, LEAD_HEADERS);
   sheet_(ss, STATS, null);
@@ -80,7 +84,7 @@ function doPost(e) {
     return text_('busy');
   }
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = book_();
     var now = new Date();
     var src = src_(d.src), first = src_(d.first), vid = cell_(d.vid, 40);
     var page = cell_(d.page, 80), ref = cell_(d.ref, 80), device = cell_(d.device, 10);
@@ -135,7 +139,7 @@ function notify_(row) {
       '궁금한 점: ' + (row[4] || '-'),
       '유입 경로: ' + src,
       '',
-      '시트: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl()
+      '시트: ' + book_().getUrl()
     ].join('\n');
     MailApp.sendEmail(to, '[Arcmo] 도입 신청 — ' + (row[2] || row[1]) + ' (' + src + ')', body);
   } catch (err) {
@@ -159,7 +163,7 @@ function doGet(e) {
 }
 
 function computeStats_(days, withLeads) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = book_();
   var tz = ss.getSpreadsheetTimeZone() || 'Asia/Seoul';
   var ev = rows_(ss.getSheetByName(EVENTS));
   var ld = rows_(ss.getSheetByName(LEADS));
@@ -231,7 +235,7 @@ function computeStats_(days, withLeads) {
 /* 통계 시트를 다시 씁니다 (매시간 + 신청이 올 때). */
 function refreshStatsSheet() {
   var s = computeStats_(30, false);
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(STATS);
+  var sh = book_().getSheetByName(STATS);
   sh.clear();
   var head = ['유입 경로', '방문자(명)', '랜딩 조회', '자세히 보기', '도입 신청 버튼', '신청 화면 조회', '입력 시작', '신청 완료', '방문자 대비 신청(%)'];
   var body = s.sources.map(function (r) {
@@ -258,6 +262,10 @@ function refreshStatsSheet() {
 }
 
 /* ────────────────── 도우미 ────────────────── */
+
+function book_() {
+  return SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+}
 
 function rows_(sh) {
   if (!sh || sh.getLastRow() < 2) return [];

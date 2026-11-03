@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var ENDPOINT = '';
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzp3PbpZeHMtlWgecWp-6sVHj41aBaegDlFl4zkqE54Yel6kM-6aE8hELV2p7r51rfw7g/exec';
 
   var SRC_RE = /^[a-z0-9_-]{1,32}$/;
   var REF_SOURCES = [

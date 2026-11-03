@@ -156,12 +156,12 @@ tr:last-child td{border-bottom:0}
     var leads = (d.leads || []).map(function (l) {
       return '<tr><td>' + esc(l.time) + '</td><td class="l">' + esc(l.name || '-') + '</td><td><a href="tel:' +
         esc(String(l.phone).replace(/[^0-9]/g, '')) + '">' + esc(l.phone) + '</a></td><td>' + esc(l.region || '-') +
-        '</td><td>' + esc(l.contact) + '</td><td>' + esc(l.src) + '</td><td class="l">' + esc(l.memo || '') + '</td><td>' +
+        '</td><td>' + esc(l.src) + '</td><td class="l">' + esc(l.memo || '') + '</td><td>' +
         esc(l.status || '') + '</td></tr>';
     }).join('');
-    $('leadTable').innerHTML = '<thead><tr><th>시각</th><th>성함·레슨장</th><th>연락처</th><th>지역</th><th>연락 방법</th>' +
+    $('leadTable').innerHTML = '<thead><tr><th>시각</th><th>레슨장·팀</th><th>연락처</th><th>지역</th>' +
       '<th>유입</th><th>궁금한 점</th><th>상태</th></tr></thead><tbody>' +
-      (leads || '<tr><td colspan="8" class="empty">아직 신청이 없습니다.</td></tr>') + '</tbody>';
+      (leads || '<tr><td colspan="7" class="empty">아직 신청이 없습니다.</td></tr>') + '</tbody>';
   }
 
   /* 한 계열 막대: 일별 방문자. 막대 위에 올리면 그날 숫자를 모두 보여줍니다. */

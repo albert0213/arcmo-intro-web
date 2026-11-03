@@ -14,7 +14,7 @@ var LEADS = 'leads';
 var STATS = '통계';
 
 var EVENT_HEADERS = ['시각', '이벤트', '유입', '최초유입', '방문자', '페이지', '이전 사이트', '기기'];
-var LEAD_HEADERS = ['시각', '연락처', '성함·레슨장', '지역', '연락 방법', '궁금한 점', '유입', '최초유입', '방문자', '기기', '처리 상태', '메모'];
+var LEAD_HEADERS = ['시각', '연락처', '레슨장·팀', '지역', '궁금한 점', '유입', '최초유입', '방문자', '기기', '처리 상태', '메모'];
 
 var ALLOWED_EVENTS = {
   landing_view: 1, click_more: 1, click_apply: 1,
@@ -91,8 +91,8 @@ function doPost(e) {
       if (!/^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(phone)) return text_('bad phone');
       if (tooMany_(vid)) return text_('slow down');
 
-      var row = [now, phone, cell_(d.name, 80), cell_(d.region, 80), cell_(d.contact, 10),
-                 cell_(d.memo, 1000), src, first, vid, device, '새 신청', ''];
+      var row = [now, phone, cell_(d.name, 80), cell_(d.region, 80), cell_(d.memo, 1000),
+                 src, first, vid, device, '새 신청', ''];
       var sheetRow = row.slice();
       sheetRow[1] = "'" + phone; // 앞자리 0 이 숫자로 바뀌지 않게
       ss.getSheetByName(LEADS).appendRow(sheetRow);
@@ -125,15 +125,14 @@ function notify_(row) {
   try {
     var to = notifyEmail_();
     if (!to) return;
-    var src = SOURCE_NAMES[row[6]] || row[6];
+    var src = SOURCE_NAMES[row[5]] || row[5];
     var body = [
       '새 도입 신청이 들어왔습니다.',
       '',
       '연락처: ' + row[1],
-      '성함·레슨장: ' + (row[2] || '-'),
+      '레슨장·팀: ' + (row[2] || '-'),
       '지역: ' + (row[3] || '-'),
-      '편한 연락 방법: ' + row[4],
-      '궁금한 점: ' + (row[5] || '-'),
+      '궁금한 점: ' + (row[4] || '-'),
       '유입 경로: ' + src,
       '',
       '시트: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl()
@@ -195,10 +194,10 @@ function computeStats_(days, withLeads) {
   ld.forEach(function (r) {
     var t = r[0];
     if (!(t instanceof Date)) return;
-    srcRow(r[6] || 'direct').leads++;
+    srcRow(r[5] || 'direct').leads++;
     if (t >= since) dayRow(t).leads++;
     leads.push({ time: Utilities.formatDate(t, tz, 'yyyy-MM-dd HH:mm'), phone: r[1], name: r[2], region: r[3],
-                 contact: r[4], memo: r[5], src: SOURCE_NAMES[r[6]] || r[6], status: r[10] });
+                 memo: r[4], src: SOURCE_NAMES[r[5]] || r[5], status: r[9] });
   });
 
   var sources = Object.keys(bySrc).map(function (k) {

@@ -104,6 +104,10 @@ tr:last-child td{border-bottom:0}
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  /* 시트 스크립트를 다시 배포하지 않아도 새 유입 경로를 한글로 보이게 합니다. */
+  var NAMES = { gameone: '게임원', yayongsa: '야용사', 'sms-newera': '뉴에라 문자', daum: '다음', naver: '네이버',
+                direct: '직접 접속', ref: '기타 사이트' };
+  function srcName(code, fallback) { return NAMES[code] || (/^sms-\d+$/.test(code) ? '문자 ' + code.slice(4) + '번' : fallback || code); }
   function n(v) { return Number(v || 0).toLocaleString('ko-KR'); }
   function pct(a, b) { return b ? (Math.round(a / b * 1000) / 10) + '%' : '–'; }
 
@@ -145,7 +149,7 @@ tr:last-child td{border-bottom:0}
     drawChart(d.daily);
 
     var rows = d.sources.map(function (s) {
-      return '<tr><td>' + esc(s.name) + '</td><td>' + n(s.visitors) + '</td><td>' + n(s.click_more) + '</td><td>' +
+      return '<tr><td>' + esc(srcName(s.src, s.name)) + '</td><td>' + n(s.visitors) + '</td><td>' + n(s.click_more) + '</td><td>' +
         n(s.click_apply + s.main_click_apply) + '</td><td>' + n(s.form_start) + '</td><td>' + n(s.leads) + '</td><td>' +
         pct(s.leads, s.visitors) + '</td></tr>';
     }).join('');
@@ -156,7 +160,7 @@ tr:last-child td{border-bottom:0}
     var leads = (d.leads || []).map(function (l) {
       return '<tr><td>' + esc(l.time) + '</td><td class="l">' + esc(l.name || '-') + '</td><td><a href="tel:' +
         esc(String(l.phone).replace(/[^0-9]/g, '')) + '">' + esc(l.phone) + '</a></td><td>' + esc(l.region || '-') +
-        '</td><td>' + esc(l.src) + '</td><td class="l">' + esc(l.memo || '') + '</td><td>' +
+        '</td><td>' + esc(srcName(l.src)) + '</td><td class="l">' + esc(l.memo || '') + '</td><td>' +
         esc(l.status || '') + '</td></tr>';
     }).join('');
     $('leadTable').innerHTML = '<thead><tr><th>시각</th><th>레슨장·팀</th><th>연락처</th><th>지역</th>' +

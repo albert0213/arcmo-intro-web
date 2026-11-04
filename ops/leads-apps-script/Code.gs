@@ -29,7 +29,8 @@ var ALLOWED_EVENTS = {
 /* 유입 경로 표시 이름 — 새 커뮤니티를 쓰면 여기에 한 줄 추가하면 됩니다. */
 var SOURCE_NAMES = {
   gameone: '게임원', dcinside: '디시인사이드', naver: '네이버', daum: '다음', kakao: '카카오',
-  instagram: '인스타그램', youtube: '유튜브', ref: '기타 사이트', direct: '직접 접속'
+  instagram: '인스타그램', youtube: '유튜브', ref: '기타 사이트', direct: '직접 접속',
+  yayongsa: '야용사', 'sms-newera': '뉴에라 문자'
 };
 
 /* ────────────────── 처음 한 번 실행 ────────────────── */

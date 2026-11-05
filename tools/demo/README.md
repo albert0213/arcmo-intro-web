@@ -1,15 +1,21 @@
 # 데모 리포트 (arcmo.xyz/demo) 만들기
 
-공개 데모는 실제 스윙 한 개(150fps, 2026-09-10 야외 타격장)를 가명으로 바꿔 올린 것입니다.
-화면은 분석 엔진 저장소(`AIMotionAnalysisProject`)의 `web/arcmo_web.html` 을 그대로 쓰고,
-데이터는 이 폴더(`demo/`)의 정적 파일에서 읽습니다.
+공개 데모는 실제 스윙 한 개(150fps, 2026-09-10 야외 타격장)를 가명으로 바꿔 올린 것입니다. 화면은 두 가지입니다.
+
+- **`/demo/` — 가벼운 데모 페이지** (소개 페이지의 링크가 여기로 옵니다). 손으로 쓴 정적 페이지 하나(`demo/index.html`)가
+  `data.json`(약 40KB)과 `lite.mp4`(960x540)만 읽습니다. 영상은 30fps 타임라인(= 1/5 슬로모션)이라 폰에서도 디코딩이 가볍고,
+  10프레임마다 키프레임이 있어 프레임 넘기기·드래그가 바로 반응합니다.
+- **`/demo/full/` — 전체 리포트 화면**. 분석 엔진 저장소(`AIMotionAnalysisProject`)의 `web/arcmo_web.html` 을 그대로 쓰고
+  데모 shim 으로 정적 파일을 읽습니다.
 
 | 파일 | 내용 |
 |---|---|
-| `demo/index.html` | `arcmo_web.html` + 데모 shim (`build_demo.py` 가 만듦) |
-| `demo/summary.json` · `series.json` · `pose.json` · `video.mp4` | 분석 결과 (시선 움직임 · 3D 어깨-골반 회전 · 체중이동 · 손 궤적) |
-| `demo/bat.json` | 프레임별 배트(그립·끝) — `tracking.json` 에서 |
-| `demo/benchmarks.json` | 기준점(상위 n%) 표 — 리포트 분포 숫자만 |
+| `demo/index.html` | 가벼운 데모 페이지 (직접 수정하는 소스, 빌드가 덮어쓰지 않음) |
+| `demo/data.json` · `lite.mp4` · `poster.jpg` | `build_lite.py` 가 만듦 |
+| `demo/full/index.html` | `arcmo_web.html` + 데모 shim (`build_demo.py` 가 만듦) |
+| `demo/full/summary.json` · `series.json` · `pose.json` · `video.mp4` | 분석 결과 (시선 움직임 · 3D 어깨-골반 회전 · 체중이동 · 손 궤적) |
+| `demo/full/bat.json` | 프레임별 배트(그립·끝) — `tracking.json` 에서 |
+| `demo/full/benchmarks.json` | 기준점(상위 n%) 표 — 리포트 분포 숫자만 |
 | `demo/swing-overlay.mp4` | 소개 페이지 첫 화면 영상 (이 도구들이 건드리지 않음) |
 
 ## 순서
@@ -25,11 +31,14 @@
    `tracking.json` 이 바뀝니다. 블러가 심한 77~79 프레임의 배트 끝은 확대 이미지를 보고 직접 찍은 값입니다(`MANUAL_HEAD`).
 3. **데모 리포트**
    ```bash
-   python tools/demo/build_demo.py --web <arcmo_web.html> --src <리포트 폴더> --bench <benchmarks_table.json> --out demo
+   python tools/demo/build_demo.py --web <arcmo_web.html> --src <리포트 폴더> --bench <benchmarks_table.json> --out demo/full
+   python tools/demo/build_lite.py --full demo/full --video <리포트 폴더>/video.mp4 --out demo
    ```
+   `build_lite.py` 는 가벼운 페이지용 `data.json` · `lite.mp4` · `poster.jpg` 를 만들고,
+   `demo/full/video.mp4` 도 15프레임마다 키프레임을 넣어 다시 인코딩합니다(150fps 그대로).
 4. **소개 페이지 첫 화면** (`index.html` 의 `const ARC`)
    ```bash
-   python tools/demo/update_landing.py --series demo/series.json
+   python tools/demo/update_landing.py --series demo/full/series.json
    ```
 
 ## 배트 스피드 · 타구 속도 · 발사각 (데모 전용 어림값)

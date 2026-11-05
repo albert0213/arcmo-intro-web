@@ -2,7 +2,6 @@
  "version": 1,
  "title": "Arcmo 데모 리포트",
  "note": "실제 분석 결과로 만든 공개 데모입니다. 선수 정보는 가명 처리했습니다.",
- "generated_at": "2026-09-15T05:10:04",
  "anonymized": true,
  "user": {
   "id": "demo",
@@ -27,14 +26,14 @@
  ],
  "analysis_options": [
   {
-   "key": "손 이동경로",
-   "label": "손 이동경로",
-   "overlay": "hand_trace",
-   "needs_lr": true
+   "key": "스윙 궤적",
+   "label": "스윙 궤적",
+   "overlay": "swing_path",
+   "needs_lr": false
   },
   {
    "key": "머리 고정",
-   "label": "머리 고정",
+   "label": "시선 움직임",
    "overlay": "head_stability",
    "needs_lr": false
   },
@@ -53,11 +52,12 @@
  ],
  "overlay_keys": [
   "skeleton",
-  "hand_trace",
+  "swing_path",
   "head_stability",
   "center_shift",
   "shoulder_hip_rotation"
  ],
+ "generated_at": "2026-11-05T10:36:27",
  "reports": [
   {
    "player_id": "d1",
@@ -67,27 +67,29 @@
    "created_at": "2026-09-10T17:40:11",
    "analysis_type": "batting",
    "items": [
-    "손 이동경로",
-    "머리 고정",
+    "스윙 궤적",
+    "시선 움직임",
     "어깨-골반 회전",
     "무게중심"
    ],
-   "memo": "공개 데모 · 손 이동경로 · 머리 고정 · 어깨-골반 회전 · 무게중심",
+   "memo": "공개 데모 · 스윙 궤적 · 시선 움직임 · 어깨-골반 회전 · 무게중심 · 배트 스피드 · 타구",
    "is_complete": true,
    "has_summary": true,
    "has_series": true,
    "has_video": true,
    "overlays": {
     "skeleton": true,
-    "hand_trace": true,
+    "swing_path": true,
     "head_stability": true,
     "center_shift": true,
     "shoulder_hip_rotation": true
    },
-   "head_stability": 9.4,
+   "errors": {},
+   "head_stability": 10.0,
+   "head_gaze_grade": "perfect",
    "impact_weight_front": null,
    "impact_weight_rear": null,
-   "separation_deg": 47.7,
+   "separation_deg": 28.3,
    "bat_side": "R"
   }
  ],
@@ -95,7 +97,9 @@
   "d1/demo": {
    "series": true,
    "pose": true,
-   "video": true
+   "video": true,
+   "bat": true,
+   "benchmarks": true
   }
  }
 }

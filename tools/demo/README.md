@@ -7,7 +7,7 @@
 | 파일 | 내용 |
 |---|---|
 | `demo/index.html` | `arcmo_web.html` + 데모 shim (`build_demo.py` 가 만듦) |
-| `demo/summary.json` · `series.json` · `pose.json` · `video.mp4` | 분석 결과 (시선 움직임 · 어깨-골반 회전 · 체중이동 · 손 궤적) |
+| `demo/summary.json` · `series.json` · `pose.json` · `video.mp4` | 분석 결과 (시선 움직임 · 3D 어깨-골반 회전 · 체중이동 · 손 궤적) |
 | `demo/bat.json` | 프레임별 배트(그립·끝) — `tracking.json` 에서 |
 | `demo/benchmarks.json` | 기준점(상위 n%) 표 — 리포트 분포 숫자만 |
 | `demo/swing-overlay.mp4` | 소개 페이지 첫 화면 영상 (이 도구들이 건드리지 않음) |
@@ -16,6 +16,8 @@
 
 1. **분석 결과 준비** — 분석PC/클라우드에서 최신 코드로 다시 계산한 리포트 폴더
    (`summary.json`, `series.json`, `pose.json`(wrists 포함), `video.mp4`).
+   어깨-골반 회전은 MotionBERT 가중치(`analytics_model/weights/motionbert_ft_h36m.bin`)가 있어야 3D(v3)로 계산되고,
+   없으면 2D(v2)로 내려갑니다. `summary.json` 의 `separation_method` 가 `motionbert_3d` 인지 확인하세요.
 2. **배트·공 추적** (영상이 바뀔 때만)
    ```bash
    python tools/demo/track_demo.py --video <video.mp4> --pose <pose.json>

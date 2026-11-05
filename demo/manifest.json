@@ -57,7 +57,7 @@
   "center_shift",
   "shoulder_hip_rotation"
  ],
- "generated_at": "2026-11-05T10:08:28",
+ "generated_at": "2026-11-05T10:36:27",
  "reports": [
   {
    "player_id": "d1",
@@ -89,7 +89,7 @@
    "head_gaze_grade": "perfect",
    "impact_weight_front": null,
    "impact_weight_rear": null,
-   "separation_deg": 47.7,
+   "separation_deg": 28.3,
    "bat_side": "R"
   }
  ],

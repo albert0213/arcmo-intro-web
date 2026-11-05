@@ -1002,7 +1002,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
       <p class="lede" data-en="Scientific coaching, in the studio you already run. No markers, no suit — computer vision finds the body in the footage and pulls the coordinates of sixteen joints, frame by frame at 150 fps. One camera, one foldable mat, about ten square meters.">과학적인 코칭을, 지금 쓰고 계신 레슨장에서 그대로. 마커도 슈트도 없이 컴퓨터 비전이 영상에서 몸을 찾아 150fps로 관절 16개의 좌표를 프레임마다 뽑아냅니다. 카메라 한 대와 접이식 매트, 3평이면 됩니다.</p>
       <div class="hero-actions">
         <a class="cta" href="/apply/" data-apply data-track="main_click_apply" data-en="Request a pilot">무료 테스트 신청하기</a>
-        <a class="cta ghost" href="#coach" data-en="Run the numbers">수익성 계산해보기</a>
+        <a class="cta ghost" href="#roi" data-en="Run the numbers">수익성 계산해보기</a>
       </div>
     </div>
   </div>
@@ -1199,73 +1199,6 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
         </div>
         <p class="mocknote" data-en="Example promo card · yours to hand out or post">예시 홍보 카드 · 그대로 출력하거나 올리면 됩니다</p>
       </div>
-    </div>
-
-    <!-- ROI -->
-    <div class="roi rv">
-      <div class="roi-head">
-        <b data-en="What it comes to, per month">그래서 월에 얼마입니까</b>
-        <span data-en="Move the sliders to your own studio's numbers.">슬라이더를 운영 중인 레슨장 숫자에 맞춰 보세요.</span>
-      </div>
-      <div class="roi-grid">
-        <div class="roi-ctl">
-          <div class="fld">
-            <label for="rStu"><span data-en="Students now">현재 수강생</span><b><span id="vStu">20</span><span data-en=" students"> 명</span></b></label>
-            <input type="range" id="rStu" min="5" max="60" step="1" value="20">
-          </div>
-          <div class="fld">
-            <label for="rFee"><span data-en="Monthly fee each">인당 월 수강료</span><b><span id="vFee">25</span><span data-en="0k KRW">만원</span></b></label>
-            <input type="range" id="rFee" min="10" max="60" step="5" value="25">
-          </div>
-          <div class="fld">
-            <label for="rNew"><span data-en="New students gained">신규 유입 수강생</span><b>+<span id="vNew">5</span><span data-en=" students"> 명</span></b></label>
-            <input type="range" id="rNew" min="1" max="15" step="1" value="5">
-          </div>
-          <div class="fld">
-            <label for="rAdd"><span data-en="Added per analysed lesson">분석 레슨 회당 추가</span><b>+<span id="vAdd">10,000</span><span data-en=" KRW">원</span></b></label>
-            <input type="range" id="rAdd" min="0" max="30000" step="1000" value="10000">
-          </div>
-        </div>
-
-        <div class="roi-out">
-          <div class="roi-row">
-            <div class="k">
-              <span class="n">01</span>
-              <b data-en="Five more students, same fee">수강생 5명 증가 · 수강료는 그대로</b>
-              <small id="oNewSub">신규 5명 × 25만원</small>
-            </div>
-            <div class="v">
-              <strong id="oNew">+125만원</strong>
-              <small data-en="per month">월 기준</small>
-            </div>
-          </div>
-
-          <div class="roi-row">
-            <div class="k">
-              <span class="n">02</span>
-              <b data-en="+10,000 KRW on every analysed lesson">장비 사용 레슨 회당 +1만원</b>
-              <small id="oAddSub">수강생 25명 × 월 8회 × 1만원</small>
-            </div>
-            <div class="v">
-              <strong id="oAdd">+200만원</strong>
-              <small data-en="per month">월 기준</small>
-            </div>
-          </div>
-
-          <div class="roi-row roi-total">
-            <div class="k">
-              <span class="n">TOTAL</span>
-              <b data-en="Added revenue, monthly">추가 매출 합계</b>
-              <small id="oYearSub">연 3,900만원</small>
-            </div>
-            <div class="v">
-              <strong id="oTot">+325만원</strong>
-              <small data-en="per month">월 기준</small>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="roi-note" data-en="Lesson count assumes twice a week (8 sessions a month). Figures are a projection from the numbers you enter, not a guarantee — set them to whatever matches your own studio.">월 레슨 횟수는 주 2회(월 8회) 기준입니다. 입력한 숫자로 계산한 추정치이며 보장 수치가 아닙니다. 운영 중인 레슨장 상황에 맞춰 바꿔 보세요.</p>
     </div>
   </div>
 </section>
@@ -1670,6 +1603,72 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
           <li data-en="Video library per player">선수별 영상 관리</li>
         </ul>
       </div>
+    </div>
+
+    <!-- ROI -->
+    <div class="roi rv" id="roi">
+      <div class="roi-head">
+        <span data-en="Move the sliders to your own studio's numbers.">슬라이더를 운영 중인 레슨장 숫자에 맞춰 보세요.</span>
+      </div>
+      <div class="roi-grid">
+        <div class="roi-ctl">
+          <div class="fld">
+            <label for="rStu"><span data-en="Students now">현재 수강생</span><b><span id="vStu">20</span><span data-en=" students"> 명</span></b></label>
+            <input type="range" id="rStu" min="5" max="60" step="1" value="20">
+          </div>
+          <div class="fld">
+            <label for="rFee"><span data-en="Monthly fee each">인당 월 수강료</span><b><span id="vFee">25</span><span data-en="0k KRW">만원</span></b></label>
+            <input type="range" id="rFee" min="10" max="60" step="5" value="25">
+          </div>
+          <div class="fld">
+            <label for="rNew"><span data-en="New students gained">신규 유입 수강생</span><b>+<span id="vNew">5</span><span data-en=" students"> 명</span></b></label>
+            <input type="range" id="rNew" min="1" max="15" step="1" value="5">
+          </div>
+          <div class="fld">
+            <label for="rAdd"><span data-en="Added per analysed lesson">분석 레슨 회당 추가</span><b>+<span id="vAdd">10,000</span><span data-en=" KRW">원</span></b></label>
+            <input type="range" id="rAdd" min="0" max="30000" step="1000" value="10000">
+          </div>
+        </div>
+
+        <div class="roi-out">
+          <div class="roi-row">
+            <div class="k">
+              <span class="n">01</span>
+              <b data-en="Five more students, same fee">수강생 5명 증가 · 수강료는 그대로</b>
+              <small id="oNewSub">신규 5명 × 25만원</small>
+            </div>
+            <div class="v">
+              <strong id="oNew">+125만원</strong>
+              <small data-en="per month">월 기준</small>
+            </div>
+          </div>
+
+          <div class="roi-row">
+            <div class="k">
+              <span class="n">02</span>
+              <b data-en="+10,000 KRW on every analysed lesson">장비 사용 레슨 회당 +1만원</b>
+              <small id="oAddSub">수강생 25명 × 월 8회 × 1만원</small>
+            </div>
+            <div class="v">
+              <strong id="oAdd">+200만원</strong>
+              <small data-en="per month">월 기준</small>
+            </div>
+          </div>
+
+          <div class="roi-row roi-total">
+            <div class="k">
+              <span class="n">TOTAL</span>
+              <b data-en="Added revenue, monthly">추가 매출 합계</b>
+              <small id="oYearSub">연 3,900만원</small>
+            </div>
+            <div class="v">
+              <strong id="oTot">+325만원</strong>
+              <small data-en="per month">월 기준</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="roi-note" data-en="Lesson count assumes twice a week (8 sessions a month). Figures are a projection from the numbers you enter, not a guarantee — set them to whatever matches your own studio.">월 레슨 횟수는 주 2회(월 8회) 기준입니다. 입력한 숫자로 계산한 추정치이며 보장 수치가 아닙니다. 운영 중인 레슨장 상황에 맞춰 바꿔 보세요.</p>
     </div>
   </div>
 </section>

@@ -23,7 +23,7 @@ var LEAD_HEADERS = ['시각', '연락처', '레슨장·팀', '지역', '궁금�
 var ALLOWED_EVENTS = {
   landing_view: 1, click_more: 1, click_apply: 1,
   apply_view: 1, form_start: 1, lead_submit: 1, lead_fallback: 1, click_more_after_apply: 1,
-  main_view: 1, main_click_apply: 1
+  main_view: 1, main_click_apply: 1, click_call: 1
 };
 
 /* 유입 경로 표시 이름 — 새 커뮤니티를 쓰면 여기에 한 줄 추가하면 됩니다. */
@@ -173,7 +173,7 @@ function computeStats_(days, withLeads) {
   var bySrc = {}, daily = {};
   function srcRow(s) {
     return bySrc[s] || (bySrc[s] = { src: s, name: SOURCE_NAMES[s] || s, visitors: {}, landing_view: 0,
-      click_more: 0, click_apply: 0, apply_view: 0, form_start: 0, main_click_apply: 0, leads: 0 });
+      click_more: 0, click_apply: 0, apply_view: 0, form_start: 0, main_click_apply: 0, click_call: 0, leads: 0 });
   }
   function dayRow(t) {
     var k = Utilities.formatDate(t, tz, 'yyyy-MM-dd');
@@ -220,7 +220,7 @@ function computeStats_(days, withLeads) {
                   click_apply: d.click_apply, leads: d.leads });
   }
 
-  var total = { visitors: 0, landing_view: 0, click_more: 0, click_apply: 0, apply_view: 0, form_start: 0, leads: 0 };
+  var total = { visitors: 0, landing_view: 0, click_more: 0, click_apply: 0, apply_view: 0, form_start: 0, click_call: 0, leads: 0 };
   sources.forEach(function (r) {
     Object.keys(total).forEach(function (k) {
       total[k] += k === 'click_apply' ? r.click_apply + r.main_click_apply : r[k];
@@ -238,13 +238,13 @@ function refreshStatsSheet() {
   var s = computeStats_(30, false);
   var sh = book_().getSheetByName(STATS);
   sh.clear();
-  var head = ['유입 경로', '방문자(명)', '랜딩 조회', '자세히 보기', '도입 신청 버튼', '신청 화면 조회', '입력 시작', '신청 완료', '방문자 대비 신청(%)'];
+  var head = ['유입 경로', '방문자(명)', '랜딩 조회', '자세히 보기', '도입 신청 버튼', '신청 화면 조회', '입력 시작', '전화 문의', '신청 완료', '방문자 대비 신청(%)'];
   var body = s.sources.map(function (r) {
     return [r.name, r.visitors, r.landing_view, r.click_more, r.click_apply + r.main_click_apply,
-            r.apply_view, r.form_start, r.leads, r.cvr];
+            r.apply_view, r.form_start, r.click_call, r.leads, r.cvr];
   });
   var t = s.total;
-  body.push(['합계', t.visitors, t.landing_view, t.click_more, t.click_apply, t.apply_view, t.form_start, t.leads,
+  body.push(['합계', t.visitors, t.landing_view, t.click_more, t.click_apply, t.apply_view, t.form_start, t.click_call, t.leads,
              t.visitors ? Math.round(t.leads / t.visitors * 1000) / 10 : 0]);
   sh.getRange(1, 1).setValue('누적 (마지막 계산: ' + s.updated + ')').setFontWeight('bold');
   sh.getRange(2, 1, 1, head.length).setValues([head]).setFontWeight('bold');

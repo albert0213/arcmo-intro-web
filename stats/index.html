@@ -139,6 +139,7 @@ tr:last-child td{border-bottom:0}
       ['자세히 보기 클릭', t.click_more, '방문자의 ' + pct(t.click_more, t.visitors)],
       ['도입 신청 버튼', t.click_apply, '방문자의 ' + pct(t.click_apply, t.visitors)],
       ['신청 화면에서 입력 시작', t.form_start, '신청 화면 조회 ' + n(t.apply_view)],
+      ['전화 문의 버튼', t.click_call || 0, '누르면 바로 전화 연결'],
       ['신청 완료', t.leads, '방문자 대비 ' + pct(t.leads, t.visitors)]
     ];
     $('tiles').innerHTML = tiles.map(function (x) {
@@ -150,12 +151,12 @@ tr:last-child td{border-bottom:0}
 
     var rows = d.sources.map(function (s) {
       return '<tr><td>' + esc(srcName(s.src, s.name)) + '</td><td>' + n(s.visitors) + '</td><td>' + n(s.click_more) + '</td><td>' +
-        n(s.click_apply + s.main_click_apply) + '</td><td>' + n(s.form_start) + '</td><td>' + n(s.leads) + '</td><td>' +
+        n(s.click_apply + s.main_click_apply) + '</td><td>' + n(s.form_start) + '</td><td>' + n(s.click_call || 0) + '</td><td>' + n(s.leads) + '</td><td>' +
         pct(s.leads, s.visitors) + '</td></tr>';
     }).join('');
     $('srcTable').innerHTML = '<thead><tr><th>유입 경로</th><th>방문자</th><th>자세히 보기</th><th>도입 신청 버튼</th>' +
-      '<th>입력 시작</th><th>신청 완료</th><th>신청률</th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="7" class="empty">아직 기록이 없습니다.</td></tr>') + '</tbody>';
+      '<th>입력 시작</th><th>전화 문의</th><th>신청 완료</th><th>신청률</th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="8" class="empty">아직 기록이 없습니다.</td></tr>') + '</tbody>';
 
     var leads = (d.leads || []).map(function (l) {
       return '<tr><td>' + esc(l.time) + '</td><td class="l">' + esc(l.name || '-') + '</td><td><a href="tel:' +

@@ -454,6 +454,16 @@ main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .gz-perfect{--gz:var(--ok)} .gz-good{--gz:var(--s1)}   /* 강조색이 녹색이 되어 Good 은 파랑으로(Perfect 녹색과 구분) */ .gz-notbad{--gz:var(--warn)} .gz-bad{--gz:var(--danger)}
 .gz-perfect,.gz-good,.gz-notbad,.gz-bad{color:var(--gz)}
 .mcard .sub{font-size:12px;color:var(--ink3)}
+/* 분석 요소 설명 — 카드 아래 두 줄, 상세 화면 맨 위 '보는 법' (2026-11-10 기민성 코치 피드백) */
+.mcard .hint{font-size:12px;line-height:1.5;color:var(--ink2);margin-top:6px;padding-top:8px;border-top:1px solid var(--line2);font-weight:500}
+.guide{background:var(--surface2);border:1px solid var(--line2);border-radius:var(--r2);padding:12px 14px;margin-bottom:12px}
+.guide .sect-t{margin-bottom:8px}
+.guide dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 12px;margin:0;font-size:13.5px;line-height:1.5}
+.guide dt{font-weight:700;color:var(--ink2);white-space:nowrap}
+.guide dt.good{color:var(--ok)}
+.guide dt.warn{color:var(--warn)}
+.guide dd{margin:0;color:var(--ink)}
+details.adv.calc{margin-top:12px}
 /* 기준점 — 지금까지 분석한 리포트 중 상위 n%·등급 (2026-11-02) */
 .mcard .bench:empty{display:none}
 .mcard .bench{font-size:12px;font-weight:700;color:var(--accent)}
@@ -4909,9 +4919,11 @@ function fillBench(){
   const res = (BENCH.table && BENCH.sm) ? benchLookup(BENCH.table, BENCH.sm) : {};
   $$('[data-bench]').forEach(el => {
     const b = res[el.dataset.bench];
-    el.innerHTML = benchText(b);
+    const isShift = el.dataset.bench === 'shift';
+    el.innerHTML = isShift ? (b && b.label ? '<span class="g">' + esc(shiftStyle(b.label)) + '</span>' : '') : benchText(b);
     el.classList.toggle('pending', !!(b && b.pending));
-    el.title = b && b.pending ? '새 측정 방식(3D) 기준점은 지난 리포트를 다시 분석한 뒤 만듭니다'
+    el.title = isShift ? (b ? '지금까지 분석한 리포트와 비교한 스윙 스타일입니다 (점수 아님)' : '')
+             : b && b.pending ? '새 측정 방식(3D) 기준점은 지난 리포트를 다시 분석한 뒤 만듭니다'
              : b ? ('지금까지 분석한 리포트 ' + (BENCH.table.metrics[el.dataset.bench] || {}).n + '개 중'
                     + (b.provisional ? ' — 옛 측정 방식 값 위주라 임시 기준입니다' : ''))
              : '';
@@ -4926,6 +4938,63 @@ async function loadBenchmarks(){
     else BENCH.state = 'fail';
   }catch(e){ BENCH.state = 'fail'; }
   fillBench();
+}
+
+/* ── 분석 요소 설명 (2026-11-10 기민성 코치 피드백, 허준영 확인) ──
+   hint 는 리포트 카드 아래 두 줄, 나머지는 상세 화면 맨 위 '보는 법'입니다.
+   체중이동은 점수가 아니라 스타일입니다: 기준점 구간 많음·보통·적음을 전진형·중간·회전형으로 보여 주고
+   상위 %는 내지 않습니다(클수록 좋은 점수처럼 읽히지 않게). */
+const SHIFT_STYLE = {'많음':'전진형', '보통':'중간', '적음':'회전형'};
+function shiftStyle(label){ return SHIFT_STYLE[label] || label || ''; }
+const METRIC_GUIDE = {
+  head: {
+    hint: '준비 자세보다 머리가 얼마나 뜨고 가라앉았는지 봅니다.<br>덜 움직일수록 좋고, 위로 뜨면 정타가 어려워집니다.',
+    rows: [
+      ['무엇을 보나', '준비 자세의 머리 높이를 0으로 두고, 임팩트 직후까지 머리가 얼마나 뜨거나 가라앉았는지(키 대비 %)를 봅니다. 등급은 Perfect, Good, Not bad, Bad 순입니다.'],
+      ['좋은 신호', '머리가 거의 같은 높이를 유지하거나 살짝 낮아집니다(그래프의 초록 구간). 눈이 공을 끝까지 따라가기 좋은 상태입니다.', 'good'],
+      ['주의 신호', '스윙 중 머리가 위로 뜨는 것(+)입니다. 상체가 일어나며 시선이 흔들려 정타가 어려워집니다. 너무 크게 가라앉는 것도 자세가 무너진 신호입니다.', 'warn'],
+      ['함께 볼 것', '체중이동에서 몸이 뜨는 구간과 머리가 뜨는 구간이 같은지 봅니다.'],
+    ]},
+  cs: {
+    hint: '점수가 아니라 스타일입니다. 크면 전진형, 작으면 회전형입니다.<br>중심이 점점 낮아지며 쳐야 좋고, 몸이 뜨면 좋지 않습니다.',
+    rows: [
+      ['무엇을 보나', '두 발 사이에서 골반 중심이 뒷발에서 앞발 쪽으로 실제로 얼마나 옮겨 갔는지(두 발 사이를 10으로 본 이동폭)를 봅니다.'],
+      ['숫자 읽는 법', '점수가 아닙니다. 크면 앞으로 전진하며 치는 스타일(전진형), 작으면 제자리에서 회전으로 치는 스타일(회전형)입니다.'],
+      ['좋은 신호', '중심이 앞으로 가는 동안 점점 낮아지면서 임팩트에 들어갑니다.', 'good'],
+      ['주의 신호', '이동 중에 몸이 뜨는 것입니다. 무게중심 그래픽을 켜고 프레임을 넘겨 보면 보입니다.', 'warn'],
+      ['함께 볼 것', '상체각도입니다. 체중은 앞으로 갔는데 상체가 뒤에 남거나 앞으로 쏠리는지 봅니다.'],
+    ]},
+  rot: {
+    hint: '골반이 먼저, 어깨가 나중에 돌수록 분리각이 커집니다.<br>클수록 하체에서 만든 힘을 상체로 더 크게 전달합니다.',
+    rows: [
+      ['무엇을 보나', '스윙 중 골반과 어깨가 투수 쪽으로 열린 각도의 차이(상하체 꼬임)의 최대값입니다.'],
+      ['좋은 신호', '앞발이 닿을 때쯤 골반이 먼저 열리며 분리각이 커지고, 임팩트 직전 어깨가 빠르게 따라 돌며 각이 줄어듭니다.', 'good'],
+      ['주의 신호', '어깨와 골반이 함께 돌아 분리각이 작거나, 어깨가 먼저 열려 음수(−)가 나오는 것입니다. 몸통 힘을 못 쓰고 팔로만 치는 스윙이 되기 쉽습니다.', 'warn'],
+      ['숫자 읽는 법', '등급(S·A·B·C)은 Arcmo에 쌓인 리포트와 비교한 상대 위치입니다. 체격·나이에 따라 다르니 같은 선수의 지난 스윙과 비교하는 게 가장 정확합니다. 좌타·우타 설정이 틀리면 값이 크게 틀어집니다.'],
+    ]},
+  swing: {
+    hint: '손이 몸에 붙어 짧게 나오는지 영상으로 봅니다.<br>배트가 공 경로에 일찍 들어와 오래 머물수록 좋습니다.',
+    rows: [
+      ['무엇을 보나', '빨간 선은 타격 손목이 지나간 길, 주황 선은 배트입니다. 스윙 잔상 보기를 켜면 배트가 지나간 면이 한 장에 보입니다.'],
+      ['좋은 신호', '손이 몸에 붙어 짧게 나오고, 배트가 공 높이에 일찍 들어와 오래 머물며, 히팅포인트가 앞발 앞쪽에 있습니다.', 'good'],
+      ['주의 신호', '손이 몸에서 멀리 돌아 나가는 것(캐스팅), 배트가 공 경로를 짧게 스치고 빠지는 것, 히팅포인트가 몸 안쪽에서 늦게 만나는 것입니다.', 'warn'],
+      ['참고', 'Up·Level·Down 구분은 아직 기준값을 정하지 않았습니다. 지금은 영상으로 판단하는 것을 권합니다.'],
+    ]},
+  stride: {
+    hint: '길이 자체보다 매 스윙 비슷한지가 중요합니다.<br>지난 스윙과 비교해 크게 달라지면 타이밍이 흔들린 신호입니다.',
+    rows: [
+      ['무엇을 보나', '바닥 마커로 맞춘 실제 거리(cm)로, 임팩트 순간 두 발목 사이의 투수 방향 폭입니다. 키에 따라 적정 폭이 다릅니다.'],
+      ['좋은 신호', '같은 선수의 스윙마다 폭이 비슷하고, 앞발이 닿은 뒤 상체와 머리가 앞으로 따라 나가지 않습니다.', 'good'],
+      ['주의 신호', '폭이 너무 넓으면 하체 회전이 막히고 중심이 주저앉습니다. 너무 좁으면 하체 힘을 덜 씁니다. 스윙마다 폭이 크게 달라지면 타이밍이 흔들리는 신호입니다.', 'warn'],
+      ['함께 볼 것', '체중이동입니다. 스트라이드가 길고 체중이동이 크면 전진형, 짧고 작으면 회전형에 가깝습니다.'],
+    ]},
+};
+function guideHintHTML(id){ const g = METRIC_GUIDE[id]; return g ? '<span class="hint">' + g.hint + '</span>' : ''; }
+function guideHTML(id){
+  const g = METRIC_GUIDE[id]; if (!g) return '';
+  return '<div class="guide"><div class="sect-t">보는 법</div><dl>'
+    + g.rows.map(r => '<dt' + (r[2] ? ' class="' + r[2] + '"' : '') + '>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>').join('')
+    + '</dl></div>';
 }
 
 function renderReport(){
@@ -4952,7 +5021,7 @@ function renderReport(){
   const card = (id, title, valHTML, sub, enabled) =>
     '<button class="mcard"'+(enabled?' data-m="'+id+'"':' disabled')+'>'
     + '<span class="t">'+esc(title)+(enabled?arrow:'')+'</span>'
-    + valHTML + (sub?'<span class="sub">'+sub+'</span>':'') + '</button>';
+    + valHTML + (sub?'<span class="sub">'+sub+'</span>':'') + guideHintHTML(id) + '</button>';
 
   $('#reportRoot').innerHTML =
     '<div class="rgrid">'
@@ -6182,7 +6251,7 @@ function hasSwingGhost(R){
 function openDetail(which){
   const R = S.rep, sm = R.summary||{}, se = R.series;
   const S1 = cssv('--s1'), S2 = cssv('--s2'), AC = cssv('--accent');
-  let title='', body='', charts=[], csBar=null, csTable=null;
+  let title='', body='', calc='', charts=[], csBar=null, csTable=null;
 
   if (which === 'rot'){
     const n = (se && se.series && se.series.shoulder_hip_rotation) || {};
@@ -6201,7 +6270,8 @@ function openDetail(which){
         fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
         series:[{name:'상하체 분리각', color:AC, data:pick(n.separation_deg)}], zeroFloor:true});
     title = '어깨 - 골반 회전';
-    body = '<div class="muted" style="font-size:13.5px">영상 그래픽과 같은 색입니다: <b style="color:#e34a34">빨강 = 어깨</b>, <b style="color:#4a6ee0">파랑 = 골반</b>. 양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>'
+    body = '<div class="muted" style="font-size:13.5px">영상 그래픽과 같은 색입니다: <b style="color:#e34a34">빨강 = 어깨</b>, <b style="color:#4a6ee0">파랑 = 골반</b>.</div>';
+    calc = '<div class="muted" style="font-size:13.5px">양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>'
          + windowNoteHTML();
   }
   else if (which === 'cs'){
@@ -6219,7 +6289,7 @@ function openDetail(which){
       charts.push({id:'c1', x:n.frame||[], fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
         series:[{name:'상체각도', color:AC, data:n.trunk_tilt_deg}]});
     title = '체중이동 · 상체각도';
-    body = '<div class="muted" style="font-size:13.5px">'
+    calc = '<div class="muted" style="font-size:13.5px">'
          + '<b style="color:var(--ink)">체중이동</b>은 두 발 사이에서 <b style="color:var(--ink)">골반 중심</b>이 '
          + '어디에 있는지를 합 10으로 나눈 값입니다. 프레임을 옮기면 그 순간의 비율이 아래 막대에 바로 나옵니다.<br>'
          + '<b style="color:var(--ink)">상체각도</b>는 골반 중심에서 몸통 중심으로 이은 선이 수직에서 기운 각도입니다 '
@@ -6250,10 +6320,10 @@ function openDetail(which){
       /* 채점 방식(감점 규칙·점수·등급 컷)은 화면에 내지 않습니다 — 결과와 그래프만. */
       const m = GAZE[g.grade];
       const fr = f => f==null ? '' : ' <span class="dim">(프레임 '+(f+1)+')</span>';
-      body = '<div class="muted" style="font-size:13.5px">'
+      calc = '<div class="muted" style="font-size:13.5px">'
            + '타격 준비 자세의 머리 높이(0%)를 기준으로, 임팩트 직후까지 머리가 얼마나 뜨고 가라앉았는지 보여줍니다. '
-           + '위로 뜨면 +, 가라앉으면 −이고 초록 구간은 괜찮은 범위입니다.</div>'
-           + '<div class="kv" style="margin-top:10px">'
+           + '위로 뜨면 +, 가라앉으면 −이고 초록 구간은 괜찮은 범위입니다.</div>';
+      body = '<div class="kv" style="margin-top:0">'
            + '<span class="muted">등급</span><span class="n '+(m?m.cls:'')+'">'+(m?m.text:'-')+'</span><span></span>'
            + '<span class="muted">위로 뜬 최대</span><span class="n">'+pct1(g.up_pct)+fr(g.up_frame)+'</span><span></span>'
            + '<span class="muted">아래로 간 최대</span><span class="n">'+pct1(g.down_pct)+fr(g.down_frame)+'</span><span></span>'
@@ -6280,7 +6350,7 @@ function openDetail(which){
         + (win ? ', 임팩트 전 ' + BAT_PRE_SEC + '초 ~ 후 ' + BAT_POST_SEC + '초(프레임 '
                  + win.s + '~' + win.e + ') 구간만 그립니다' : '')
         + '. <b style="color:#ffd60a">노란 점선</b>은 임팩트 뒤 공이 날아간 길입니다.';
-    body = '<div class="muted" style="font-size:13.5px"><b style="color:#ff0000">빨강</b>은 타격 손목이 지나간 자리입니다. '
+    calc = '<div class="muted" style="font-size:13.5px"><b style="color:#ff0000">빨강</b>은 타격 손목이 지나간 자리입니다. '
          + '프레임을 하나씩 넘기면서 궤적이 그려지는 순서를 보세요.' + batLine
          + '<br><b style="color:var(--ink)">스윙 잔상 보기</b>를 켜면 스윙 구간의 영상을 반투명하게 겹쳐 배트가 지나간 자취를 '
          + '그대로 보여줍니다(손·배트 궤적 그래픽은 숨깁니다). 팔·몸의 잔상도 함께 남습니다.</div>'
@@ -6296,13 +6366,13 @@ function openDetail(which){
     const cal = st.calibration || {}, cam = st.camera || {};
     const cm = v => (v == null || !Number.isFinite(Number(v))) ? '-' : Number(v).toFixed(1) + ' cm';
     const fr = f => (f == null) ? '' : ' <span class="dim">(프레임 ' + (Number(f) + 1) + ')</span>';
-    body = '<div class="muted" style="font-size:13.5px">'
+    calc = '<div class="muted" style="font-size:13.5px">'
          + '바닥의 마커 4개로 맞춘 캘리브레이션으로 두 발목을 바닥 위 실제 위치로 옮겨 '
          + '<b style="color:var(--ink)">투수 방향(매트 좌우)으로 잰 두 발목 사이 거리</b>입니다. 발목 관절은 바닥보다 약 '
          + ((st.ankle_height_mm || 90) / 10).toFixed(0) + 'cm 높아서 그 높이로 계산합니다. '
          + '발을 든 구간(레그킥)은 그 발이 디딘 깊이의 세로 면으로 옮겨 투수 방향 거리를 이어 그립니다. '
-         + '영상의 <b style="color:#c9a400">노란 선</b>이 두 발목입니다.</div>'
-         + '<div class="kv" style="margin-top:10px">'
+         + '영상의 <b style="color:#c9a400">노란 선</b>이 두 발목입니다.</div>';
+    body = '<div class="kv" style="margin-top:0">'
          + '<span class="muted">스트라이드' + (st.basis === 'impact' ? ' (임팩트 순간)' : ' (최대)') + '</span><span class="n">' + cm(st.stride_cm) + fr(st.frame) + '</span><span></span>'
          + '<span class="muted">준비 자세 폭</span><span class="n">' + cm(st.stance_cm) + fr(st.stance_frame) + '</span><span></span>'
          + '<span class="muted">벌어진 폭</span><span class="n">' + cm(st.gain_cm) + '</span><span></span>'
@@ -6429,7 +6499,8 @@ function openDetail(which){
     + '</div>'
     + '<div class="dvid">' + vidCard + '</div>'
     + '<div class="dbar">' + barHtml + '</div>'
-    + '<div class="ddesc">' + body + '</div>'
+    + '<div class="ddesc">' + guideHTML(which) + body
+      + (calc ? '<details class="adv calc"><summary>자세한 설명 · 계산 방법</summary>' + calc + '</details>' : '') + '</div>'
     + '<div class="dinfo">' + chartHtml + '</div>'
     + '</div></div>';
 

@@ -6195,13 +6195,13 @@ function openDetail(which){
     const x = pick(x0);
     charts.push({id:'c1', x:x,
       fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
-      series:[{name:'어깨', color:S1, data:pick(n.shoulder_deg)}, {name:'골반', color:S2, data:pick(n.hip_deg)}]});
+      series:[{name:'어깨', color:'#e34a34', data:pick(n.shoulder_deg)}, {name:'골반', color:'#4a6ee0', data:pick(n.hip_deg)}]});
     if ((n.separation_deg||[]).length)
       charts.push({id:'c2', x:x,
         fmtY:v=>v.toFixed(0)+'°', fmtV:v=>v.toFixed(1)+'°', refY:[0,90],
         series:[{name:'상하체 분리각', color:AC, data:pick(n.separation_deg)}], zeroFloor:true});
     title = '어깨 - 골반 회전';
-    body = '<div class="muted" style="font-size:13.5px">양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>'
+    body = '<div class="muted" style="font-size:13.5px">영상 그래픽과 같은 색입니다: <b style="color:#e34a34">빨강 = 어깨</b>, <b style="color:#4a6ee0">파랑 = 골반</b>. 양수는 투수 쪽으로 열린 각도입니다. 골반이 먼저 열리고 어깨가 뒤따를수록 분리각이 커집니다.</div>'
          + windowNoteHTML();
   }
   else if (which === 'cs'){
@@ -7352,7 +7352,7 @@ function renderCmpDetails(){
     const n = R.series && R.series.series && R.series.series.shoulder_hip_rotation;
     if (!n) return null;
     const sh = cmpPick(R, n, i => (n.shoulder_deg || [])[i]), hp = cmpPick(R, n, i => (n.hip_deg || [])[i]);
-    return {x:sh.map(p => p.x), series:[{name:'어깨', color:S1, data:sh.map(p => p.v)}, {name:'골반', color:S2, data:hp.map(p => p.v)}],
+    return {x:sh.map(p => p.x), series:[{name:'어깨', color:'#e34a34', data:sh.map(p => p.v)}, {name:'골반', color:'#4a6ee0', data:hp.map(p => p.v)}],
             extra:{fmtY:v => v.toFixed(0) + '°', fmtV:v => v.toFixed(1) + '°', refY:[0, 90]}};
   });
   const rotCol = (R, ch) => { const sp = num((R.summary || {}).separation_deg);

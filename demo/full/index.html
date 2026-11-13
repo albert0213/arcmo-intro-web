@@ -876,8 +876,8 @@ body.fsopen{overflow:hidden}
 <div id="login">
   <div class="loginbox">
     <div class="brand">
-      <div class="brandmark">창</div>
-      <div class="brandtxt"><b>Arcmo</b><span>야구 동작분석</span></div>
+      <div class="brandmark">A</div>
+      <div class="brandtxt"><b>Arcmo</b><span>야구 동작 분석</span></div>
     </div>
 
     <!-- 입력 화면은 저장된 로그인 확인이 끝난 뒤에만 표시합니다. -->
@@ -1177,7 +1177,7 @@ body.fsopen{overflow:hidden}
           <div style="margin-top:14px">
             <label class="f">연결 서버</label>
             <input id="setSrv" class="inp" type="url" inputmode="url" autocapitalize="off" spellcheck="false" readonly>
-            <div class="hintline">이 앱은 창미야 클라우드(api.arcmo.xyz)에 연결됩니다. <b id="setIdTag" style="color:var(--ink)"></b></div>
+            <div class="hintline">이 앱은 Arcmo 클라우드(api.arcmo.xyz)에 연결됩니다. <b id="setIdTag" style="color:var(--ink)"></b></div>
           </div>
           <div class="row" style="margin-top:14px;gap:8px">
             <button class="btn primary grow" id="btnSaveSrv" style="display:none">저장하고 다시 연결</button>
@@ -7748,7 +7748,7 @@ $('#btnClearCache').onclick = async ()=>{
   syncServerField();
   $('#loginFoot').textContent = VIEW.mode
     ? '리포트 보기 — 이름과 팀 코드로 로그인하면 팀 선수의 리포트를 볼 수 있습니다.'
-    : '창미야 클라우드에 연결합니다. 이름과 팀 코드를 입력하세요.';
+    : 'Arcmo 클라우드에 연결합니다. 이름과 팀 코드를 입력하세요.';
 
   const keep = LS.get('keep', null);
   if (keep && keep.id){
